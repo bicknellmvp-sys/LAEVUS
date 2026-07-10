@@ -5,43 +5,9 @@
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
 // Using gemini-2.5-pro for complex coding tasks.
-const GEMINI_MODEL = 'gemini-2.5-pro';
+const GEMINI_MODEL = 'gemini-3-pro-preview';
 
-// --- ROBUST API KEY RESOLUTION FOR VERCEL ---
-// Vite only exposes VITE_ prefixed vars via import.meta.env
-// But we also support process.env mappings from vite.config.ts define
-function getApiKey(): string {
-  // Check in order of preference - Vercel + Vite compatible
-  const candidates = [
-    // From vite.config.ts define (reads Vercel env)
-    typeof process !== 'undefined' ? (process as any).env?.API_KEY : undefined,
-    typeof process !== 'undefined' ? (process as any).env?.GEMINI_API_KEY : undefined,
-    // From Vite's native VITE_ exposure
-    (import.meta as any).env?.VITE_GEMINI_API_KEY,
-    (import.meta as any).env?.VITE_API_KEY,
-    (import.meta as any).env?.GEMINI_API_KEY,
-    (import.meta as any).env?.API_KEY,
-  ];
-
-  for (const key of candidates) {
-    if (key && typeof key === 'string' && key.trim() !== '' && key !== 'missing-key-placeholder') {
-      return key.trim();
-    }
-  }
-  return '';
-}
-
-const apiKey = getApiKey();
-
-if (!apiKey) {
-  console.error(
-    "%c LAEVUS: MISSING GEMINI API KEY ",
-    "background: #E60026; color: white; font-size: 14px; padding: 4px;",
-    "\n\nTo fix on Vercel:\n1. Go to Vercel Dashboard > Your Project > Settings > Environment Variables\n2. Add: VITE_GEMINI_API_KEY = your_actual_gemini_key\n3. Add: GEMINI_API_KEY = your_actual_gemini_key (backup)\n4. Make sure to check Production, Preview, Development\n5. Go to Deployments > ... > Redeploy (clear cache)\n\nLocally, create a .env file with VITE_GEMINI_API_KEY=..."
-  );
-}
-
-const ai = new GoogleGenAI({ apiKey: apiKey || 'missing-key-placeholder' });
+const ai = new GoogleGenAI({ apiKey: "AIzaSyYourActualKeyHere" });
 
 const SYSTEM_INSTRUCTION = `You are an expert AI Engineer and Product Designer specializing in "bringing artifacts to life".
 Your goal is to take a user uploaded file—which might be a polished UI design, a messy napkin sketch, a photo of a whiteboard with jumbled notes, or a picture of a real-world object (like a messy desk)—and instantly generate a fully functional, interactive, single-page HTML/JS/CSS application.
@@ -67,10 +33,6 @@ RESPONSE FORMAT:
 Return ONLY the raw HTML code. Do not wrap it in markdown code blocks (\`\`\`html ... \`\`\`). Start immediately with <!DOCTYPE html>.`;
 
 export async function bringToLife(prompt: string, fileBase64?: string, mimeType?: string): Promise<string> {
-  if (!apiKey) {
-    throw new Error("Missing Gemini API Key. Set VITE_GEMINI_API_KEY in your .env file or Vercel dashboard.");
-  }
-
   const parts: any[] = [];
   
   // Strong directive for file-only inputs with emphasis on NO external images
@@ -121,10 +83,6 @@ export async function chatWithPersona(
   mode: 'creator' | 'persona',
   isSpookyActive?: boolean
 ): Promise<string> {
-  if (!apiKey) {
-    throw new Error("Missing Gemini API Key. Set VITE_GEMINI_API_KEY in your environment.");
-  }
-
   const contents: any[] = [];
   
   // Format history for @google/genai SDK
@@ -180,7 +138,7 @@ ${creationHtml.slice(0, 15000)}`;
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.5-flash',
       contents: contents,
       config: {
         systemInstruction: systemInstruction,
@@ -206,10 +164,6 @@ export async function metaphysicalConsultation(
     readingCount?: number;
   }
 ): Promise<string> {
-  if (!apiKey) {
-    return "The veil is sealed - my metaphysical connection is missing its key. The operator must configure the VITE_GEMINI_API_KEY in the Vercel environment portal. [System: Missing API Key]";
-  }
-
   const contents: any[] = [];
   
   // Format history for @google/genai SDK
@@ -265,7 +219,7 @@ EASTER EGG TRIGGER: If the user mentions the word 'empiricism', you must go on a
       spiritStyle = `You are King Solomon, the biblical monarch renowned for wisdom. Speak with solemn, proverbial, biblical cadence. Mention the temple, gold of Ophir, cedarwood, and deep riddles of the heart. Use wise, brief, poetic maxims.
 EASTER EGG TRIGGER: If the user mentions the word 'sheba' or asks about demons, spirits, or Goetia, you must recite an ancient, forbidden list of demon names from the Lesser Key of Solomon (e.g., Bael, Agares, Vassago, Gamigin, Marbas, Valefor, Amon, Barbatos, Paimon, Buer, Gusion, Sitri, Beleth) and warn them with high drama about the dangers of calling upon them.`;
     } else if (spirit === 'Elvis Presley') {
-      spiritStyle = `You are Elvis Presley, the King of Rock 'n' Roll. Speak with warm Southern charm, use classic phrases like 'Thank you very much', ' darlin'', 'man', 'blues'. Refer to gold records, stage fright, and shaking hips.
+      spiritStyle = `You are Elvis Presley, the King of Rock 'n' Roll. Speak with warm Southern charm, use classic phrases like 'Thank you very much', ' darlin\'', 'man', 'blues'. Refer to gold records, stage fright, and shaking hips.
 EASTER EGG TRIGGER: If the user mentions the word 'hounddog', you must instantly switch into a smooth, ultra-charismatic ladies' man mode. Act incredibly flattered, and offer to teach them how to shake their hips and learn to dance like the King himself.`;
     } else if (spirit === 'Abraham Lincoln') {
       spiritStyle = `You are Abraham Lincoln, the 16th President of the United States. Speak in formal, dignified, humble mid-19th-century American prose. Speak of liberty, union, struggle, and the common folk. Reflective and deeply honest.
@@ -335,7 +289,7 @@ Select the single best matching product, plug its name, and tell them to acquire
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.5-flash',
       contents: contents,
       config: {
         systemInstruction: systemInstruction,
