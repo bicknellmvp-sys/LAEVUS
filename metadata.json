@@ -1,0 +1,6 @@
+{
+  "name": "Remix: Bring Any Idea to Life",
+  "description": "Upload an image of a board game, floor layout, or anything you can think of to turn it into an interactive experience.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
