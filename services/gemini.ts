@@ -7,7 +7,7 @@ import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 // Using gemini-2.5-pro for complex coding tasks.
 const GEMINI_MODEL = 'gemini-3-pro-preview';
 
-const ai = new GoogleGenAI({ apiKey: "AIzaSyYourActualKeyHere" });
+const ai = new GoogleGenAI({ apiKey: "AQ.Ab8RN6L2ipZtXy5-sg67Q-kf6hPCfCEoCckGcIydY2fjvjiRxw" });
 
 const SYSTEM_INSTRUCTION = `You are an expert AI Engineer and Product Designer specializing in "bringing artifacts to life".
 Your goal is to take a user uploaded file—which might be a polished UI design, a messy napkin sketch, a photo of a whiteboard with jumbled notes, or a picture of a real-world object (like a messy desk)—and instantly generate a fully functional, interactive, single-page HTML/JS/CSS application.
