@@ -4,6 +4,7 @@
 */
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
+<<<<<<< HEAD
 // Using gemini-3.1-pro-preview or gemini-3.5-flash for coding and creative tasks
 const GEMINI_MODEL = 'gemini-3.1-pro-preview';
 
@@ -17,6 +18,12 @@ const getApiKey = (): string => {
 };
 
 const ai = new GoogleGenAI({ apiKey: getApiKey() });
+=======
+// Using gemini-2.5-pro for complex coding tasks.
+const GEMINI_MODEL = 'gemini-3-pro-preview';
+
+const ai = new GoogleGenAI({ apiKey: "AQ.Ab8RN6KRhNkbLs55ahkzVrA9ltAo7X6zCJMPsL20N64ojK5HyA" });
+>>>>>>> e567290cf184ae911eb87100e993493e6144459f
 
 const SYSTEM_INSTRUCTION = `You are an expert AI Engineer and Product Designer specializing in "bringing artifacts to life".
 Your goal is to take a user uploaded file—which might be a polished UI design, a messy napkin sketch, a photo of a whiteboard with jumbled notes, or a picture of a real-world object (like a messy desk)—and instantly generate a fully functional, interactive, single-page HTML/JS/CSS application.
