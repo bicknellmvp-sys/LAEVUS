@@ -1,6 +1,6 @@
 {
-  "name": "Remix: Bring Any Idea to Life",
-  "description": "Upload an image of a board game, floor layout, or anything you can think of to turn it into an interactive experience.",
+  "name": "LAEVUS",
+  "description": "A sovereign metaphysical portal and spiritual cybernetic guide exploring tarot, the afterlife, and inner patterns.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LAEVUS • Metaphysical Interface</title>
+    <title>Gemini 3 - Bring Anything to Life</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- PDF.js for rendering PDF previews -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -12,26 +12,52 @@
       window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     </script>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&family=Zeyada&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@700;800&family=Zeyada&family=Ruthie&display=swap');
+      @import url('https://fonts.cdnfonts.com/css/google-sans');
       
       :root {
-        --bg: #111113;
+        --bg: #050209; /* deepest purple, almost black */
         --ink: #F8F7F4;
         --accent: #E60026;
       }
       
+      @keyframes acidTrip {
+        0% {
+          background-position: 0% 50%, 50% 100%, 0% 0%;
+        }
+        50% {
+          background-position: 100% 50%, 0% 0%, 50% 100%;
+        }
+        100% {
+          background-position: 0% 50%, 50% 100%, 0% 0%;
+        }
+      }
+
       body {
         font-family: 'Space Mono', monospace;
         background-color: var(--bg);
+        /* Multilayered organic gradients that create a rich, tactile slow-moving psychedelic aura */
+        background-image: 
+          radial-gradient(circle at 15% 25%, rgba(139, 92, 246, 0.12) 0%, transparent 45%),
+          radial-gradient(circle at 85% 75%, rgba(236, 72, 153, 0.09) 0%, transparent 40%),
+          radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.06) 0%, transparent 55%),
+          radial-gradient(circle, rgba(139, 92, 246, 0.09) 1px, transparent 1px), /* enhanced purple dot grid */
+          url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+        background-size: 200% 200%, 200% 200%, 200% 200%, 30px 30px, auto;
+        animation: acidTrip 25s ease-in-out infinite;
         color: var(--ink);
       }
-      
-      /* Technical Dot Grid Background */
-      .bg-dot-grid {
-        background-size: 40px 40px;
-        background-image: radial-gradient(circle, rgba(230, 0, 38, 0.1) 1px, transparent 1px);
-      }
 
+      /* Give all black panel elements a tactile matte grain texture */
+      .bg-zinc-950 {
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E") !important;
+        background-color: #09090b !important;
+      }
+      .bg-zinc-900 {
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E") !important;
+        background-color: #18181b !important;
+      }
+      
       /* Helper classes for fonts */
       .font-syne {
         font-family: 'Syne', sans-serif;
@@ -42,16 +68,38 @@
       .font-zeyada {
         font-family: 'Zeyada', cursive;
       }
+      .font-ruthie {
+        font-family: 'Ruthie', cursive !important;
+      }
+      .font-google-sans {
+        font-family: 'Google Sans', 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif !important;
+      }
 
       /* Smooth scrolling for the whole app */
       html {
         scroll-behavior: smooth;
       }
     </style>
-    <link rel="stylesheet" href="/index.css">
-  </head>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@^19.2.0/client",
+    "react-dom": "https://esm.sh/react-dom@^19.2.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.28.0",
+    "@heroicons/react/24/outline": "https://esm.sh/@heroicons/react@^2.2.0/24/outline",
+    "@heroicons/react/24/solid": "https://esm.sh/@heroicons/react@^2.2.0/24/solid",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.0/",
+    "react/": "https://esm.sh/react@^19.2.0/",
+    "@heroicons/react/": "https://esm.sh/@heroicons/react@^2.2.0/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.475.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
-  </body>
+  <script type="module" src="/index.tsx"></script>
+</body>
 </html>

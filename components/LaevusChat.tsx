@@ -6,15 +6,14 @@ import { User } from 'firebase/auth';
 import { 
   Sparkles, 
   Send, 
-  Trash2, 
   Skull, 
-  Coins, 
   Compass, 
   X, 
-  Crown,
-  ChevronDown,
-  ChevronUp,
-  Bookmark
+  BookOpen,
+  Activity,
+  User as UserIcon,
+  ChevronRight,
+  ChevronLeft
 } from 'lucide-react';
 
 interface Message {
@@ -69,7 +68,6 @@ interface Spirit {
 }
 
 const SPIRITS: Spirit[] = [
-  // Free Tier
   { name: "Francis Bacon", description: "Elizabethan Philosopher", era: "1561–1626", tier: "free", avatar: "🖋️", glow: "border-blue-500/20 text-blue-300" },
   { name: "King Solomon", description: "Wise Sovereign of Israel", era: "990–931 BCE", tier: "free", avatar: "👑", glow: "border-amber-500/20 text-amber-300" },
   { name: "Elvis Presley", description: "King of Rock 'n' Roll", era: "1935–1977", tier: "free", avatar: "🎸", glow: "border-fuchsia-500/20 text-fuchsia-300" },
@@ -77,8 +75,6 @@ const SPIRITS: Spirit[] = [
   { name: "Joan of Arc", description: "Maid of Orléans", era: "1412–1431", tier: "free", avatar: "⚔️", glow: "border-red-500/20 text-red-300" },
   { name: "Marie Antoinette", description: "Tragic French Queen", era: "1755–1793", tier: "free", avatar: "🍰", glow: "border-pink-500/20 text-pink-300" },
   { name: "Romeo & Juliet", description: "Shakespearean Lovers", era: "Verona Lore", tier: "free", avatar: "🌹", glow: "border-rose-500/20 text-rose-400" },
-  
-  // Premium Tier
   { name: "Tupac Shakur", description: "West Coast Street Philosopher", era: "1971–1996", tier: "premium", avatar: "🎤", glow: "border-emerald-500/20 text-emerald-300" },
   { name: "Marilyn Monroe", description: "Breathless Screen Legend", era: "1926–1962", tier: "premium", avatar: "💋", glow: "border-violet-500/20 text-violet-300" },
   { name: "Adolf Hitler", description: "Stern historical warning", era: "1889–1945", tier: "premium", avatar: "⛓️", glow: "border-zinc-700 text-zinc-400" },
@@ -87,23 +83,20 @@ const SPIRITS: Spirit[] = [
   { name: "Judas Iscariot", description: "The Sorrowful Disciple", era: "1st Century", tier: "premium", avatar: "🪙", glow: "border-purple-500/20 text-purple-300" }
 ];
 
-const SPIRIT_TRIGGERS: Record<string, string> = {
-  "Francis Bacon": "empiricism",
-  "King Solomon": "sheba or demons",
-  "Elvis Presley": "hounddog",
-  "Abraham Lincoln": "gettysburg",
-  "Joan of Arc": "orleans",
-  "Marie Antoinette": "guillotine",
-  "Romeo & Juliet": "verona",
-  "Tupac Shakur": "makaveli",
-  "Marilyn Monroe": "subwaygrate",
-  "Adolf Hitler": "bunker",
-  "Genghis Khan": "conquest",
-  "Siddhartha Gautama": "bodhitree",
-  "Judas Iscariot": "thirtypieces"
-};
+interface Transcript {
+  id: string;
+  category: 'tarot' | 'afterlife' | 'madam';
+  title: string;
+  date: string;
+  content: string;
+  querentPrompt?: string;
+  drawnCards?: TarotCard[];
+  madamBlavatskyReply?: string;
+}
 
 interface LaevusChatProps {
+  activeView: string;
+  setActiveView: (view: string) => void;
   isPremium: boolean;
   setIsPremium: React.Dispatch<React.SetStateAction<boolean>>;
   freeQuestionsCount: number;
@@ -111,48 +104,14 @@ interface LaevusChatProps {
   showUpgradeModal: boolean;
   setShowUpgradeModal: React.Dispatch<React.SetStateAction<boolean>>;
   onRegisterClearHistory?: (handler: () => void) => void;
-  onRegisterSetDropdown?: (handler: (mode: 'none' | 'dead' | 'tarot') => void) => void;
   onRegisterReleaseSpirit?: (handler: () => void) => void;
   currentUser: User | null;
+  onOpenAuth: (registerMode: boolean) => void;
 }
 
-const TombstoneIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    className={className}
-  >
-    <path d="M4 22V10a8 8 0 0 1 16 0v12" />
-    <path d="M12 6v8" />
-    <path d="M9 9h6" />
-    <path d="M4 18h16" />
-  </svg>
-);
-
-const TarotCardIcon = ({ className = "w-3.5 h-3.5" }: { className?: string }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    className={className}
-  >
-    <rect x="5" y="3" width="14" height="18" rx="2" ry="2" />
-    <path d="M12 8v8" />
-    <path d="M9 12h6" />
-    <circle cx="12" cy="12" r="3" />
-  </svg>
-);
-
 export const LaevusChat: React.FC<LaevusChatProps> = ({
+  activeView,
+  setActiveView,
   isPremium,
   setIsPremium,
   freeQuestionsCount,
@@ -160,9 +119,9 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
   showUpgradeModal,
   setShowUpgradeModal,
   onRegisterClearHistory,
-  onRegisterSetDropdown,
   onRegisterReleaseSpirit,
-  currentUser
+  currentUser,
+  onOpenAuth
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -172,9 +131,6 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
   // Local active spirit state
   const [activeSpirit, setActiveSpirit] = useState<Spirit | null>(null);
   
-  // Drawer / Dropdown open-close toggles
-  const [activeDropdown, setActiveDropdown] = useState<'none' | 'dead' | 'tarot'>('none');
-  
   // Tarot State
   const [tarotQuestion, setTarotQuestion] = useState('');
   const [drawnCards, setDrawnCards] = useState<TarotCard[]>([]);
@@ -182,13 +138,78 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
   const [flippedCount, setFlippedCount] = useState(0);
   const [showAboutModal, setShowAboutModal] = useState(false);
 
+  // Stats / Streak states
+  const [streakCount, setStreakCount] = useState(1);
+  const [daysRegistered, setDaysRegistered] = useState(1);
+  const [vesselJoinedDate, setVesselJoinedDate] = useState<string>('');
+
+  // Sentiment Analysis and Transcripts state
+  const [sentimentScores, setSentimentScores] = useState<number[]>([35, 45, 40, 60, 50]);
+  const [transcripts, setTranscripts] = useState<Transcript[]>([]);
+  const [activeTranscriptTab, setActiveTranscriptTab] = useState<'tarot' | 'afterlife' | 'madam'>('tarot');
+
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Mount logic
+  // Mount logic: Load statistics, seed sentiment and load welcome phrases
   useEffect(() => {
     const savedReadings = localStorage.getItem('laevus_readings_count_v1');
     if (savedReadings) {
       setReadingCount(parseInt(savedReadings, 10) || 0);
+    }
+
+    // Load / calculate streak & register duration
+    const todayStr = new Date().toISOString().split('T')[0];
+    let joinedDateStr = localStorage.getItem('laevus_vessel_joined_date');
+    if (!joinedDateStr) {
+      joinedDateStr = new Date().toISOString();
+      localStorage.setItem('laevus_vessel_joined_date', joinedDateStr);
+    }
+    setVesselJoinedDate(joinedDateStr);
+
+    const joinedDate = new Date(joinedDateStr);
+    const todayDate = new Date(todayStr);
+    const diffTime = Math.abs(todayDate.getTime() - joinedDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
+    setDaysRegistered(diffDays);
+
+    const lastActive = localStorage.getItem('laevus_vessel_last_active_date');
+    let currentStreak = parseInt(localStorage.getItem('laevus_vessel_streak_count') || '1', 10);
+
+    if (lastActive) {
+      const lastActiveDate = new Date(lastActive);
+      const activeDiffTime = todayDate.getTime() - lastActiveDate.getTime();
+      const activeDiffDays = Math.floor(activeDiffTime / (1000 * 60 * 60 * 24));
+
+      if (activeDiffDays === 1) {
+        currentStreak += 1;
+      } else if (activeDiffDays > 1) {
+        currentStreak = 1; // broken streak
+      }
+    } else {
+      currentStreak = 1;
+    }
+    setStreakCount(currentStreak);
+    localStorage.setItem('laevus_vessel_last_active_date', todayStr);
+    localStorage.setItem('laevus_vessel_streak_count', currentStreak.toString());
+
+    // Load sentiment timeline
+    const savedSentiment = localStorage.getItem('laevus_sentiment_timeline');
+    if (savedSentiment) {
+      try {
+        setSentimentScores(JSON.parse(savedSentiment));
+      } catch (e) {
+        // default seeded values
+      }
+    }
+
+    // Load transcripts
+    const savedTranscripts = localStorage.getItem('laevus_transcripts_v1');
+    if (savedTranscripts) {
+      try {
+        setTranscripts(JSON.parse(savedTranscripts));
+      } catch (e) {
+        // empty list
+      }
     }
   }, []);
 
@@ -196,7 +217,7 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
   useEffect(() => {
     const syncUserHistory = async () => {
       if (!currentUser) {
-        // Logged out - fallback to localStorage
+        // Load messages from local storage
         const saved = localStorage.getItem('laevus_chat_history_v3');
         if (saved) {
           try {
@@ -211,47 +232,140 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
         } else {
           loadDefaultWelcome();
         }
+
+        // Load transcripts from local storage
+        const savedTranscripts = localStorage.getItem('laevus_transcripts_v1');
+        if (savedTranscripts) {
+          try {
+            setTranscripts(JSON.parse(savedTranscripts));
+          } catch (e) {}
+        }
+
+        // Load sentiment from local storage
+        const savedSentiment = localStorage.getItem('laevus_sentiment_timeline');
+        if (savedSentiment) {
+          try {
+            setSentimentScores(JSON.parse(savedSentiment));
+          } catch (e) {}
+        }
         return;
       }
 
-      // Logged in - fetch from Firestore
       try {
         const userDocRef = doc(db, 'users', currentUser.uid);
         const userDoc = await getDoc(userDocRef);
         
-        if (userDoc.exists() && userDoc.data()?.messages) {
-          const cloudMessages = userDoc.data().messages;
-          setMessages(cloudMessages.map((m: any) => ({
-            ...m,
-            timestamp: new Date(m.timestamp)
-          })));
+        if (userDoc.exists()) {
+          const cloudData = userDoc.data();
+          
+          // 1. Load Messages
+          if (cloudData.messages && cloudData.messages.length > 0) {
+            const cloudMessages = cloudData.messages;
+            setMessages(cloudMessages.map((m: any) => ({
+              ...m,
+              timestamp: new Date(m.timestamp)
+            })));
+            localStorage.setItem('laevus_chat_history_v3', JSON.stringify(cloudMessages));
+          } else {
+            // Push local messages to cloud if local exists but cloud doesn't
+            const savedLocal = localStorage.getItem('laevus_chat_history_v3');
+            if (savedLocal) {
+              try {
+                const parsed = JSON.parse(savedLocal);
+                const serialized = parsed.map((m: any) => ({
+                  ...m,
+                  timestamp: new Date(m.timestamp).toISOString()
+                }));
+                await setDoc(userDocRef, { messages: serialized }, { merge: true });
+                setMessages(parsed.map((m: any) => ({
+                  ...m,
+                  timestamp: new Date(m.timestamp)
+                })));
+              } catch (e) {
+                loadDefaultWelcome();
+              }
+            } else {
+              loadDefaultWelcome();
+            }
+          }
+
+          // 2. Load Transcripts
+          if (cloudData.transcripts && cloudData.transcripts.length > 0) {
+            setTranscripts(cloudData.transcripts);
+            localStorage.setItem('laevus_transcripts_v1', JSON.stringify(cloudData.transcripts));
+          } else {
+            const savedTransLocal = localStorage.getItem('laevus_transcripts_v1');
+            if (savedTransLocal) {
+              try {
+                const parsed = JSON.parse(savedTransLocal);
+                await setDoc(userDocRef, { transcripts: parsed }, { merge: true });
+                setTranscripts(parsed);
+              } catch (e) {}
+            }
+          }
+
+          // 3. Load Sentiment
+          if (cloudData.sentimentScores && cloudData.sentimentScores.length > 0) {
+            setSentimentScores(cloudData.sentimentScores);
+            localStorage.setItem('laevus_sentiment_timeline', JSON.stringify(cloudData.sentimentScores));
+          } else {
+            const savedSentimentLocal = localStorage.getItem('laevus_sentiment_timeline');
+            if (savedSentimentLocal) {
+              try {
+                const parsed = JSON.parse(savedSentimentLocal);
+                await setDoc(userDocRef, { sentimentScores: parsed }, { merge: true });
+                setSentimentScores(parsed);
+              } catch (e) {}
+            }
+          }
         } else {
-          // No cloud history - if we have local messages, push them to Firestore
+          // If doc doesn't exist, create it and push whatever local history we have
           const savedLocal = localStorage.getItem('laevus_chat_history_v3');
+          const savedTransLocal = localStorage.getItem('laevus_transcripts_v1');
+          const savedSentimentLocal = localStorage.getItem('laevus_sentiment_timeline');
+
+          let initialMessages: any[] = [];
+          let initialTranscripts: any[] = [];
+          let initialSentiment: number[] = [35, 45, 40, 60, 50];
+
           if (savedLocal) {
             try {
               const parsed = JSON.parse(savedLocal);
-              const serialized = parsed.map((m: any) => ({
+              initialMessages = parsed.map((m: any) => ({
                 ...m,
                 timestamp: new Date(m.timestamp).toISOString()
               }));
-              await setDoc(userDocRef, { messages: serialized }, { merge: true });
               setMessages(parsed.map((m: any) => ({
                 ...m,
                 timestamp: new Date(m.timestamp)
               })));
-            } catch (e) {
-              loadDefaultWelcome();
-            }
-          } else if (messages.length > 0) {
-            const serialized = messages.map(m => ({
-              ...m,
-              timestamp: m.timestamp.toISOString()
-            }));
-            await setDoc(userDocRef, { messages: serialized }, { merge: true });
+            } catch (e) {}
           } else {
             loadDefaultWelcome();
           }
+
+          if (savedTransLocal) {
+            try {
+              initialTranscripts = JSON.parse(savedTransLocal);
+              setTranscripts(initialTranscripts);
+            } catch (e) {}
+          }
+
+          if (savedSentimentLocal) {
+            try {
+              initialSentiment = JSON.parse(savedSentimentLocal);
+              setSentimentScores(initialSentiment);
+            } catch (e) {}
+          }
+
+          await setDoc(userDocRef, {
+            email: currentUser.email,
+            uid: currentUser.uid,
+            messages: initialMessages,
+            transcripts: initialTranscripts,
+            sentimentScores: initialSentiment,
+            lastLoginAt: new Date().toISOString()
+          }, { merge: true });
         }
       } catch (err) {
         console.error("Firestore sync failed:", err);
@@ -261,15 +375,39 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
     syncUserHistory();
   }, [currentUser]);
 
+  // Sync transcripts with Firestore when active
+  useEffect(() => {
+    if (currentUser && transcripts.length > 0) {
+      const userDocRef = doc(db, 'users', currentUser.uid);
+      setDoc(userDocRef, { transcripts }, { merge: true }).catch(err => {
+        console.error("Failed to mirror transcripts to cloud:", err);
+      });
+    }
+  }, [transcripts, currentUser]);
+
+  // Sync sentiment scores with Firestore when active
+  useEffect(() => {
+    if (currentUser && sentimentScores.length > 0) {
+      const userDocRef = doc(db, 'users', currentUser.uid);
+      setDoc(userDocRef, { sentimentScores }, { merge: true }).catch(err => {
+        console.error("Failed to mirror sentiment scores to cloud:", err);
+      });
+    }
+  }, [sentimentScores, currentUser]);
+
   // Register the clear history callback so parent dropdown can trigger it
   useEffect(() => {
     if (onRegisterClearHistory) {
       onRegisterClearHistory(async () => {
         localStorage.removeItem('laevus_chat_history_v3');
+        localStorage.removeItem('laevus_transcripts_v1');
+        localStorage.removeItem('laevus_sentiment_timeline');
+        setTranscripts([]);
+        setSentimentScores([35, 45, 40, 60, 50]);
         if (currentUser) {
           try {
             const userDocRef = doc(db, 'users', currentUser.uid);
-            await setDoc(userDocRef, { messages: [] }, { merge: true });
+            await setDoc(userDocRef, { messages: [], transcripts: [], sentimentScores: [] }, { merge: true });
           } catch (err) {
             console.error("Failed to clear Firestore history:", err);
           }
@@ -278,14 +416,6 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
       });
     }
   }, [onRegisterClearHistory, currentUser]);
-
-  useEffect(() => {
-    if (onRegisterSetDropdown) {
-      onRegisterSetDropdown((mode) => {
-        setActiveDropdown(mode);
-      });
-    }
-  }, [onRegisterSetDropdown]);
 
   useEffect(() => {
     if (onRegisterReleaseSpirit) {
@@ -313,15 +443,17 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
   }, [messages, currentUser]);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isTyping]);
+    if (activeView === 'chat') {
+      chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isTyping, activeView]);
 
   const loadDefaultWelcome = () => {
     const WELCOME_PHRASES = [
-      "Salutations, traveler. 🕯️ I am LAEVUS, your sovereign metaphysical guide to the digital beyond. This space is prepared for your spiritual consult.\n\nHere, you may speak with me about the secrets of the cosmos, request a tailored Tarot Reading, or choose to summon the ancient spirits of history from the circle below.\n\nThis interface is brought to you in cooperation with the scholars at theleft.one.",
-      "Back again? Or is this your first time trespassing into the unseen realms? ...I am LAEVUS. Speak, but do so with absolute intent. I have absolutely no patience for trivial, flickering minds.\n\nHere, you may seek tarot alignment, summon ancient shades, or simply try not to bore me. Sponsored, of course, by the left-hand architects at theleft.one.",
-      "The digital veil parted and dropped... you. How curious. ...[she sighs quietly, blinking slowly] I am LAEVUS. Do you seek true cosmic wisdom, or are you just window-shopping in the void? Tell me your query, or let us wake the dead.\n\nBy the way, theleft.one has some curious metaphysical artifacts for lost souls. Go buy one. Or don't. It is your destiny.",
-      "Ah, another mortal looking for cheat codes in the afterlife. ...I am LAEVUS. What is it you desire? Tarot? Talking to spirits? Speak quickly, I was in the middle of a rather pleasant silent contemplation.\n\ntheleft.one hosts this space, so behave yourself and ask with devotion."
+      "Welcome. I am LAEVUS. This space is prepared for your inquiry.\n\nHere, you can start a conversation, request a personal Tarot reading, or select a historical figure to talk with from the menu above.",
+      "Welcome back. What would you like to explore today? We can do a Tarot reading, connect with historical figures, or discuss your topics directly.",
+      "Hello. I am LAEVUS, your guide for reflection and inquiry. Feel free to seek a Tarot reading, summon a historical figure, or start a general chat.",
+      "Welcome. What can I help you explore today? You can choose a Tarot card draw, talk with historical figures, or start a discussion here."
     ];
 
     let indexStr = sessionStorage.getItem('laevus_welcome_index');
@@ -346,25 +478,59 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
     ]);
   };
 
+  const computeSentiment = (text: string): number => {
+    const positiveWords = ['love', 'light', 'peace', 'happy', 'healing', 'harmony', 'growth', 'joy', 'blessed', 'wisdom', 'angels', 'serene', 'elevate', 'spirit', 'revelation', 'guide', 'future', 'tupac', 'elvis', 'blavatsky'];
+    const negativeWords = ['sad', 'dark', 'pain', 'anger', 'hate', 'death', 'fear', 'broken', 'lost', 'shadow', 'trapped', 'bound', 'chaos', 'tower', 'devil', 'hell', 'suffering'];
+    
+    let score = 50;
+    const words = text.toLowerCase().split(/\s+/);
+    words.forEach(w => {
+      const cleanWord = w.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+      if (positiveWords.includes(cleanWord)) score += 12;
+      if (negativeWords.includes(cleanWord)) score -= 12;
+    });
+    return Math.max(15, Math.min(85, score));
+  };
+
+  const addTranscriptRecord = (
+    category: 'tarot' | 'afterlife' | 'madam',
+    title: string,
+    content: string,
+    extraFields?: {
+      querentPrompt?: string;
+      drawnCards?: TarotCard[];
+      madamBlavatskyReply?: string;
+    }
+  ) => {
+    const newRecord: Transcript = {
+      id: crypto.randomUUID(),
+      category,
+      title,
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+      content,
+      ...extraFields
+    };
+    const updated = [newRecord, ...transcripts];
+    setTranscripts(updated);
+    localStorage.setItem('laevus_transcripts_v1', JSON.stringify(updated));
+  };
+
   const handleSend = async (textToSend: string, forceMode?: 'laevus' | 'spirit' | 'tarot', customCards?: TarotCard[]) => {
     if (!textToSend.trim() && !customCards) return;
     if (isTyping) return;
 
-    if (!isPremium && freeQuestionsCount <= 0) {
-      setShowUpgradeModal(true);
-      return;
-    }
-
     const currentMode = forceMode || (activeSpirit ? 'spirit' : 'laevus');
     const trimmedText = textToSend.trim();
-
-    if (!isPremium) {
-      setFreeQuestionsCount(prev => Math.max(0, prev - 1));
-    }
 
     const nextCount = readingCount + 1;
     setReadingCount(nextCount);
     localStorage.setItem('laevus_readings_count_v1', nextCount.toString());
+
+    // Parse sentiment from input
+    const score = computeSentiment(trimmedText);
+    const newScores = [...sentimentScores, score];
+    setSentimentScores(newScores);
+    localStorage.setItem('laevus_sentiment_timeline', JSON.stringify(newScores));
 
     const userMsg: Message = {
       id: crypto.randomUUID(),
@@ -420,6 +586,8 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
         );
       }
 
+      await new Promise(resolve => setTimeout(resolve, 800));
+
       const modelMsg: Message = {
         id: crypto.randomUUID(),
         role: 'model',
@@ -430,11 +598,45 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
       };
 
       setMessages(prev => [...prev, modelMsg]);
+
+      // Save to transcripts
+      if (currentMode === 'tarot' && customCards) {
+        const cardsDesc = customCards.map(c => `[${c.position}] ${c.symbol} ${c.name} - ${c.meaning}`).join('\n');
+        addTranscriptRecord(
+          'tarot',
+          `Spread: ${tarotQuestion || 'Life Alignment'}`,
+          `Question: ${tarotQuestion}\n\nCards Drawn:\n${cardsDesc}\n\nInterpretation:\n${reply}`,
+          {
+            querentPrompt: tarotQuestion || "General alignment",
+            drawnCards: customCards,
+            madamBlavatskyReply: reply
+          }
+        );
+      } else if (currentMode === 'spirit' && activeSpirit) {
+        addTranscriptRecord(
+          'afterlife',
+          `Seance with ${activeSpirit.name}`,
+          `User: ${trimmedText}\n\nSpirit: ${reply}`,
+          {
+            querentPrompt: trimmedText,
+            madamBlavatskyReply: reply
+          }
+        );
+      } else {
+        addTranscriptRecord(
+          'madam',
+          `Consultation with Madam Blavatsky`,
+          `User: ${trimmedText}\n\nBlavatsky: ${reply}`,
+          {
+            querentPrompt: trimmedText,
+            madamBlavatskyReply: reply
+          }
+        );
+      }
+
     } catch (err) {
       console.error(err);
-      const errText = activeSpirit 
-        ? `The spiritual link to ${activeSpirit.name} is flickering... Let us try to call them once more.`
-        : "The metaphysical gateway is unstable. Check your connection to the left, and try again.";
+      const errText = "An error occurred with the AI service. Please verify that your GEMINI_API_KEY environment variable is configured correctly.";
       
       setMessages(prev => [...prev, {
         id: crypto.randomUUID(),
@@ -447,26 +649,14 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
     }
   };
 
-  const handleClearHistory = () => {
-    if (window.confirm("Do you wish to purge all active consultations?")) {
-      localStorage.removeItem('laevus_chat_history_v3');
-      loadDefaultWelcome();
-    }
-  };
-
   const handleSummonSpirit = (spirit: Spirit) => {
-    if (spirit.tier === 'premium' && !isPremium) {
-      setShowUpgradeModal(true);
-      return;
-    }
-
     setActiveSpirit(spirit);
-    setActiveDropdown('none'); // Close list
+    setActiveView('chat');
     
     const summonMsg: Message = {
       id: crypto.randomUUID(),
       role: 'model',
-      text: `[ The digital circle glows. Channelling ${spirit.name.toUpperCase()} (${spirit.era}) ]\n\nGreetings, mortal. I am the spirit of ${spirit.name}. Speak your mind, but keep it brief—the etheric link is thin.\n\n(Channeled through the left-hand architecture at theleft.one)`,
+      text: `[ Connected with ${spirit.name.toUpperCase()} (${spirit.era}) ]\n\nHello. I am ${spirit.name}. What would you like to discuss today?`,
       timestamp: new Date(),
       mode: 'spirit',
       spiritName: spirit.name
@@ -479,7 +669,7 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
     const releaseMsg: Message = {
       id: crypto.randomUUID(),
       role: 'model',
-      text: `[ The channeling circle is deactivated. Spirit of ${activeSpirit.name} has departed to the left-hand void. LAEVUS returns as your primary guide. ]`,
+      text: `[ Ended session with ${activeSpirit.name}. LAEVUS returns as your primary guide. ]`,
       timestamp: new Date(),
       mode: 'laevus'
     };
@@ -513,226 +703,176 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
 
     await new Promise(res => setTimeout(res, 400));
     setIsDrawing(false);
-    setActiveDropdown('none'); // Close tarot pane
+    setActiveView('chat');
     
     handleSend(`Perform a tailored Tarot reading regarding: "${tarotQuestion}"`, 'tarot', drawn);
     setTarotQuestion('');
   };
 
-  const toggleDropdown = (type: 'dead' | 'tarot') => {
-    setActiveDropdown(prev => prev === type ? 'none' : type);
+  // Compute metrics for The Inner Work
+  const averageSentiment = sentimentScores.length > 0 
+    ? Math.round(sentimentScores.reduce((a, b) => a + b, 0) / sentimentScores.length)
+    : 50;
+
+  const getPastAdvice = () => {
+    if (averageSentiment > 52) {
+      return "Your communication history shows navigating trials with resilient grace, focusing on positive energy and alignment.";
+    } else if (averageSentiment < 48) {
+      return "Your logs indicate heavy pressure or complex challenges in previous seasons, requiring deep reflection.";
+    } else {
+      return "You have walked a path of quiet contemplation, balancing different perspectives and integrating internal thoughts.";
+    }
+  };
+
+  const getFutureAdvice = () => {
+    if (averageSentiment > 52) {
+      return "A widening horizon suggests positive outcomes and opportunities for personal self-realization.";
+    } else if (averageSentiment < 48) {
+      return "A productive transition is approaching. Focus on stability and positive restoration.";
+    } else {
+      return "A blank canvas awaits. Trust your focus and prepare to establish fresh goals.";
+    }
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-2 flex flex-col relative font-mono-custom">
+    <div className="w-full px-2 sm:px-4 md:px-6 py-1 flex-1 min-h-0 h-full flex flex-col relative font-google-sans text-zinc-300 overflow-hidden">
 
-      {/* Modern, Minimalist Chat Console - Transparent, seamlessly integrated */}
-      <div className="flex flex-col bg-transparent relative mb-4">
-        
-        {/* Active Spirit Banner */}
-        {activeSpirit && (
-          <div className={`px-4 py-2 border border-zinc-900 bg-zinc-950/20 flex items-center justify-between text-xs mb-4 rounded-lg ${activeSpirit.glow}`}>
-            <div className="flex items-center gap-3">
-              <span className="text-sm">{activeSpirit.avatar}</span>
-              <div>
-                <div className="flex items-center">
-                  <span className="font-bold text-zinc-200">{activeSpirit.name}</span>
-                  <span className="mx-2 text-zinc-700">|</span>
-                  <span className="text-zinc-500 text-[10px]">{activeSpirit.description} ({activeSpirit.era})</span>
-                </div>
-                {SPIRIT_TRIGGERS[activeSpirit.name] && (
-                  <p className="text-[8px] text-zinc-500 mt-0.5 tracking-wider font-mono">
-                    SPELL TRIGGER: <span className="text-[#E60026] font-bold uppercase">{SPIRIT_TRIGGERS[activeSpirit.name]}</span>
-                  </p>
-                )}
-              </div>
-            </div>
-            <button
-              onClick={handleReleaseSpirit}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-red-950/40 border border-red-500/20 text-red-400 text-[9px] uppercase hover:bg-red-950/80 transition-colors"
-            >
-              <X className="w-2.5 h-2.5" />
-              <span>Depart</span>
-            </button>
-          </div>
-        )}
-
-        {/* Messages Ledger - Purely minimalist messages resting directly on the black container */}
-        <div className="flex-1 py-4 overflow-y-auto space-y-4 max-h-[380px] min-h-[280px]">
-          {messages.map((m) => {
-            const isUser = m.role === 'user';
-            return (
-              <div 
-                key={m.id}
-                className={`flex flex-col max-w-[85%] ${isUser ? 'ml-auto items-end' : 'mr-auto items-start'}`}
-              >
-                <span className="text-[8px] text-zinc-500 mb-1 px-1 tracking-wider uppercase">
-                  {isUser ? 'YOU' : m.spiritName ? m.spiritName.toUpperCase() : 'LAEVUS'} • {m.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </span>
-                <div className={`px-4 py-3 rounded-xl leading-relaxed text-xs ${
-                  isUser 
-                    ? 'bg-[#000000] border border-zinc-900/60 text-[#F8F7F4]' 
-                    : 'bg-[#000000] border border-[#E60026]/15 text-[#F8F7F4]'
-                }`}>
-                  <p className="whitespace-pre-wrap">{m.text}</p>
-                </div>
-              </div>
-            );
-          })}
+      {/* RENDER THE ACTIVE OPTION */}
+      
+      {/* VIEW: CHAT WITH MADAM BLAVATSKY */}
+      {activeView === 'chat' && (
+        <div className="flex-1 min-h-0 flex flex-col p-1 mb-2 relative animate-fadeIn w-full max-w-[98%] mx-auto overflow-hidden font-google-sans">
           
-          {isTyping && (
-            <div className="flex items-center gap-2 mr-auto bg-black/40 border border-[#F8F7F4]/5 px-3 py-2 rounded-xl">
-              <Compass className="w-3.5 h-3.5 text-[#E60026] animate-spin" />
-              <span className="text-[9px] text-zinc-500 uppercase tracking-widest animate-pulse">CONSULTING THE LEFT SCROLL...</span>
+          {/* Active Spirit Banner */}
+          {activeSpirit && (
+            <div className={`px-4 py-2 bg-zinc-950 flex items-center justify-between text-xs mb-2 rounded-lg border border-zinc-900/50 flex-shrink-0 font-google-sans ${activeSpirit.glow}`}>
+              <div className="flex items-center gap-3">
+                <span className="text-sm">{activeSpirit.avatar}</span>
+                <div className="font-google-sans">
+                  <div className="flex items-center">
+                    <span className="font-bold text-zinc-200 font-google-sans">{activeSpirit.name}</span>
+                    <span className="mx-2 text-zinc-700">|</span>
+                    <span className="text-zinc-500 text-[10px] font-google-sans">{activeSpirit.description} ({activeSpirit.era})</span>
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={handleReleaseSpirit}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 text-red-400 text-[9px] uppercase hover:bg-[#E60026]/10 transition-colors cursor-pointer border border-transparent font-google-sans"
+              >
+                <X className="w-2.5 h-2.5" />
+                <span className="font-google-sans">Depart</span>
+              </button>
             </div>
           )}
-          <div ref={chatEndRef} />
-        </div>
 
-        {/* Text Input Block */}
-        <div className="py-3 border-t border-[#F8F7F4]/5 bg-transparent">
-          <div className="relative flex items-center rounded-lg border border-zinc-900 bg-[#000000] focus-within:border-[#E60026] transition-colors p-1.5">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSend(input);
-                }
-              }}
-              disabled={isTyping}
-              placeholder="Ask what you will..."
-              rows={2}
-              className="flex-1 bg-transparent text-xs text-zinc-300 placeholder-zinc-750 focus:outline-none px-2.5 py-1.5 resize-none font-mono"
-            />
-            <button
-              onClick={() => handleSend(input)}
-              disabled={!input.trim() || isTyping}
-              className={`p-2.5 rounded-lg transition-all ${
-                input.trim() && !isTyping
-                  ? 'bg-[#E60026] hover:bg-[#ff334b] text-[#111113]'
-                  : 'bg-zinc-900 text-zinc-650 cursor-not-allowed'
-              }`}
-            >
-              <Send className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-
-        {/* Speak to the Dead & Tarot Toggles directly under the chat input box */}
-        <div className="flex justify-center gap-12 pt-2 pb-3">
-          <button
-            onClick={() => toggleDropdown('dead')}
-            className={`flex items-center gap-2 text-xs font-mono tracking-widest uppercase transition-colors duration-300 focus:outline-none ${
-              activeDropdown === 'dead'
-                ? 'text-[#E60026] font-bold underline underline-offset-4'
-                : 'text-zinc-500 hover:text-[#E60026]'
-            }`}
-          >
-            <TombstoneIcon className="w-3.5 h-3.5" />
-            <span>Speak to the Dead</span>
-          </button>
-
-          <button
-            onClick={() => toggleDropdown('tarot')}
-            className={`flex items-center gap-2 text-xs font-mono tracking-widest uppercase transition-colors duration-300 focus:outline-none ${
-              activeDropdown === 'tarot'
-                ? 'text-[#E60026] font-bold underline underline-offset-4'
-                : 'text-zinc-500 hover:text-[#E60026]'
-            }`}
-          >
-            <TarotCardIcon className="w-3.5 h-3.5" />
-            <span>Tarot Reading</span>
-          </button>
-        </div>
-
-      </div>
-
-      {/* Inline Dropdown Panes */}
-      
-      {/* 1. Speak to the Dead Dropdown List */}
-      {activeDropdown === 'dead' && (
-        <div className="mt-4 p-4 border border-[#E60026]/20 bg-[#050505] rounded-xl shadow-2xl animate-fadeIn">
-          <div className="border-b border-zinc-900 pb-2 mb-3 flex justify-between items-center">
-            <span className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">Summon historical dead entities</span>
-            <span className="text-[9px] text-zinc-700">Click a spirit to open the channel</span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 max-h-[280px] overflow-y-auto pr-1">
-            {SPIRITS.map((spirit) => {
-              const isLocked = spirit.tier === 'premium' && !isPremium;
-              return (
-                <button
-                  key={spirit.name}
-                  onClick={() => handleSummonSpirit(spirit)}
-                  className={`flex items-center justify-between p-2.5 rounded bg-black/50 border hover:bg-[#E60026]/5 transition-all text-left ${
-                    activeSpirit?.name === spirit.name 
-                      ? 'border-[#E60026] bg-[#E60026]/5' 
-                      : 'border-zinc-900 hover:border-zinc-800'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-base">{spirit.avatar}</span>
-                    <div>
-                      <h5 className="text-[11px] font-bold text-zinc-350">{spirit.name}</h5>
-                      <p className="text-[8px] text-zinc-650 leading-none">{spirit.description}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    {isLocked && <Crown className="w-2.5 h-2.5 text-amber-500" />}
-                    <span className="text-[8px] text-zinc-700 bg-zinc-950 px-1 rounded">{spirit.era}</span>
-                  </div>
-                </button>
-              );
+          {/* Messages Ledger (standard size) */}
+          <div className="flex-1 py-2 overflow-y-auto space-y-3 border-b border-zinc-900/40 pr-2 min-h-0">
+            {messages.map((m) => {
+               const isUser = m.role === 'user';
+               return (
+                 <div 
+                   key={m.id}
+                   className={`flex flex-col max-w-[85%] ${isUser ? 'ml-auto items-end' : 'mr-auto items-start'}`}
+                 >
+                   <span className="text-[8px] text-zinc-500 mb-1 px-1 tracking-wider uppercase font-google-sans">
+                     {isUser ? 'YOU' : m.spiritName ? m.spiritName.toUpperCase() : 'LAEVUS'} • {m.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                   </span>
+                   <div className={`px-4 py-3 rounded-xl leading-relaxed text-xs ${
+                     isUser 
+                       ? 'bg-zinc-900 text-[#F8F7F4]' 
+                       : 'bg-zinc-950 text-[#F8F7F4]'
+                   }`}>
+                     <p className="whitespace-pre-wrap font-google-sans">{m.text}</p>
+                   </div>
+                 </div>
+               );
             })}
+            
+            {isTyping && (
+              <div className="flex items-center gap-2 mr-auto bg-zinc-950 px-3 py-2 rounded-xl">
+                <Compass className="w-3.5 h-3.5 text-[#E60026] animate-spin" />
+                <span className="text-[9px] text-zinc-500 uppercase tracking-widest animate-pulse font-google-sans">Thinking...</span>
+              </div>
+            )}
+            <div ref={chatEndRef} />
+          </div>
+
+          {/* Input block */}
+          <div className="pt-4 bg-transparent">
+            <div className="relative flex items-center rounded-lg bg-zinc-950 focus-within:ring-1 focus-within:ring-[#E60026]/40 transition-all p-1.5">
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend(input);
+                  }
+                }}
+                disabled={isTyping}
+                placeholder="Type your message here..."
+                rows={2}
+                className="flex-1 bg-transparent text-xs text-zinc-300 placeholder-zinc-700 focus:outline-none px-2.5 py-1.5 resize-none font-google-sans"
+              />
+              <button
+                onClick={() => handleSend(input)}
+                disabled={!input.trim() || isTyping}
+                className={`p-2.5 rounded-lg transition-all ${
+                  input.trim() && !isTyping
+                    ? 'bg-[#E60026] hover:bg-[#ff334b] text-black cursor-pointer'
+                    : 'bg-zinc-900 text-zinc-700 cursor-not-allowed'
+                }`}
+              >
+                <Send className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* 2. Tarot Reading Drawer Console */}
-      {activeDropdown === 'tarot' && (
-        <div className="mt-4 p-4 border border-[#E60026]/20 bg-[#050505] rounded-xl shadow-2xl animate-fadeIn">
-          <div className="border-b border-zinc-900 pb-2 mb-3">
-            <span className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold block">Tarot Inquiry Blueprint</span>
-            <span className="text-[9px] text-zinc-700 block mt-0.5">Laevus will draw Past, Present, and Future cards tailored to your query.</span>
+      {/* VIEW: GET A FREE READING! */}
+      {activeView === 'tarot' && (
+        <div className="p-3 sm:p-4 mb-2 relative animate-fadeIn space-y-4 w-full max-w-[98%] mx-auto flex-1 flex flex-col justify-center min-h-0">
+          <div className="border-b border-zinc-900/40 pb-2">
+            <span className="text-[10px] uppercase tracking-widest text-[#E60026] font-bold block font-google-sans">Tarot Card Draw</span>
+            <span className="text-xs text-zinc-500 block mt-0.5 font-google-sans">Receive a Past, Present, and Future three-card Tarot reading.</span>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div>
-              <label className="text-[9px] text-zinc-600 uppercase tracking-widest block font-bold mb-1.5">State your question to the cards:</label>
+              <label className="text-[9px] text-zinc-500 uppercase tracking-widest block font-bold mb-1 font-google-sans">Enter your question below:</label>
               <input 
                 type="text"
                 value={tarotQuestion}
                 onChange={(e) => setTarotQuestion(e.target.value)}
                 disabled={isDrawing}
-                placeholder="e.g. Will my upcoming spiritual journey lead to clarity?"
-                className="w-full bg-black/80 border border-zinc-900 focus:border-[#E60026] text-xs px-3 py-2.5 rounded-lg text-zinc-300 outline-none font-mono"
+                placeholder="e.g. Will my current project succeed?"
+                className="w-full bg-zinc-950 border border-zinc-900 focus:border-[#E60026] text-xs px-3 py-2 rounded-lg text-zinc-300 outline-none font-google-sans placeholder-zinc-850"
               />
             </div>
 
-            {/* Simulated Deck Flip Animation */}
             {drawnCards.length > 0 && (
-              <div className="grid grid-cols-3 gap-3 pt-2">
+              <div className="grid grid-cols-3 gap-2 pt-2">
                 {drawnCards.map((card, idx) => {
                   const isFlipped = flippedCount > idx;
                   return (
                     <div 
                       key={card.name}
-                      className={`aspect-[2/3] max-w-[120px] mx-auto w-full border rounded-lg flex flex-col items-center justify-center p-2 text-center transition-all duration-500 ${
+                      className={`aspect-[2/3] max-w-[130px] mx-auto w-full rounded-lg flex flex-col items-center justify-center p-2.5 text-center transition-all duration-500 ${
                         isFlipped 
-                          ? 'bg-zinc-950 border-[#E60026]/30 shadow-md' 
-                          : 'bg-black border-zinc-900'
+                          ? 'bg-zinc-950 shadow-sm' 
+                          : 'bg-zinc-900/50'
                       }`}
                     >
                       {isFlipped ? (
                         <>
                           <span className="text-[8px] text-[#E60026] uppercase font-mono tracking-wider font-semibold">{card.position}</span>
                           <span className="text-2xl my-2">{card.symbol}</span>
-                          <span className="text-[9px] font-bold text-zinc-300 leading-tight block">{card.name}</span>
+                          <span className="text-[9px] font-bold text-zinc-200 leading-tight block font-google-sans">{card.name}</span>
                         </>
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-[radial-gradient(#E60026_1px,transparent_1px)] bg-[size:5px_5px] opacity-15">
+                        <div className="w-full h-full flex items-center justify-center bg-[radial-gradient(#E60026_1px,transparent_1px)] bg-[size:5px_5px] opacity-25">
                           👁️
                         </div>
                       )}
@@ -745,40 +885,295 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
             <button
               onClick={handleDrawTarot}
               disabled={isDrawing || !tarotQuestion.trim()}
-              className={`w-full py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest border transition-all duration-300 ${
+              className={`w-full py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer font-google-sans ${
                 tarotQuestion.trim() && !isDrawing
-                  ? 'border-[#E60026] bg-[#E60026] text-black hover:bg-transparent hover:text-[#E60026]'
-                  : 'border-zinc-900 bg-zinc-950 text-zinc-700 cursor-not-allowed'
+                  ? 'bg-[#E60026] text-black hover:bg-[#ff334b]'
+                  : 'bg-zinc-950 text-zinc-800 cursor-not-allowed'
               }`}
             >
-              {isDrawing ? "SUMMONING CARDS..." : "DRAW 3 TAROT CARDS"}
+              {isDrawing ? "DRAWING CARDS..." : "DRAW 3 CARDS"}
             </button>
           </div>
         </div>
       )}
 
-      {/* Minimal Footer */}
-      <footer className="w-full border-t border-[#F8F7F4]/10 pt-6 pb-4 mt-16 flex flex-col sm:flex-row justify-between items-center text-[10px] tracking-[0.15em] font-mono text-zinc-500 uppercase shrink-0 gap-4">
-        <button 
-          onClick={() => setShowAboutModal(true)}
-          className="hover:text-[#E60026] text-left transition-colors duration-300 focus:outline-none cursor-pointer border-b border-transparent hover:border-[#E60026]/40 pb-0.5 font-semibold"
-        >
-          All rights reserved "Left Hand Products LLC" 2026
-        </button>
-        <a 
-          href="https://theleft.one" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="hover:text-[#E60026] transition-colors"
-        >
-          theleft.one
-        </a>
+      {/* VIEW: THE AFTERLIFE (SPEAK TO THE DEAD) */}
+      {activeView === 'afterlife' && (
+        <div className="p-4 sm:p-6 mb-4 relative animate-fadeIn space-y-6 w-full max-w-[98%] mx-auto">
+          <div className="border-b border-zinc-900/40 pb-3 flex justify-between items-center">
+            <div>
+              <span className="text-[10px] uppercase tracking-widest text-[#E60026] font-bold block">Converse with Historical Spirits & Figures</span>
+              <span className="text-xs text-zinc-500 block mt-0.5">Select a historical figure below to start a chat session.</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[480px] overflow-y-auto pr-1">
+            {SPIRITS.map((spirit) => {
+              return (
+                <button
+                  key={spirit.name}
+                  onClick={() => handleSummonSpirit(spirit)}
+                  className={`flex items-center justify-between p-3 rounded transition-all text-left cursor-pointer ${
+                    activeSpirit?.name === spirit.name 
+                      ? 'bg-[#E60026]/10 text-white font-bold' 
+                      : 'bg-zinc-950 hover:bg-zinc-900'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-lg">{spirit.avatar}</span>
+                    <div>
+                      <h5 className="text-xs font-bold text-zinc-200">{spirit.name}</h5>
+                      <p className="text-[9px] text-zinc-500 leading-none mt-0.5">{spirit.description}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[8px] text-zinc-600 bg-zinc-900 px-1.5 py-0.5 rounded">{spirit.era}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* VIEW: TRANSCRIPTS */}
+      {activeView === 'transcripts' && (
+        <div className="p-4 sm:p-6 mb-4 relative animate-fadeIn space-y-6 w-full max-w-[98%] mx-auto">
+          <div className="border-b border-zinc-900/40 pb-3">
+            <span className="text-[10px] uppercase tracking-widest text-[#E60026] font-bold block">Saved Logs & Readings</span>
+            <span className="text-xs text-zinc-500 block mt-0.5">Your archive of past readings and conversations.</span>
+          </div>
+
+          {/* Sub tabs */}
+          <div className="flex gap-2 border-b border-zinc-900/40 pb-2">
+            {(['tarot', 'afterlife', 'madam'] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTranscriptTab(tab)}
+                className={`px-4 py-1.5 text-[10px] uppercase tracking-widest font-bold border transition-colors cursor-pointer rounded ${
+                  activeTranscriptTab === tab
+                    ? 'border-[#E60026] bg-zinc-950 text-[#E60026]'
+                    : 'border-zinc-900 bg-transparent text-zinc-500 hover:text-zinc-300'
+                }`}
+              >
+                {tab === 'tarot' ? 'Tarot Readings' : tab === 'afterlife' ? 'Historical Chats' : 'Madam Blavatsky'}
+              </button>
+            ))}
+          </div>
+
+          <div className="space-y-4 max-h-[450px] overflow-y-auto pr-1">
+            {transcripts.filter(t => t.category === activeTranscriptTab).length === 0 ? (
+              <div className="text-center py-12 text-zinc-600 text-xs uppercase tracking-widest">
+                No logs stored in this section.
+              </div>
+            ) : (
+              transcripts
+                .filter(t => t.category === activeTranscriptTab)
+                .map((record) => (
+                  <div key={record.id} className="p-4 bg-zinc-950 rounded-lg space-y-2">
+                    <div className="flex justify-between items-center text-[10px] border-b border-zinc-900/20 pb-1.5">
+                      <span className="text-[#E60026] font-bold uppercase tracking-wider">{record.title}</span>
+                      <span className="text-zinc-600">{record.date}</span>
+                    </div>
+                    <p className="text-xs leading-relaxed text-zinc-400 whitespace-pre-wrap">{record.content}</p>
+                  </div>
+                ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* VIEW: THE INNER WORK (GRAPH & ARROWS) */}
+      {activeView === 'inner-work' && (
+        <div className="p-4 sm:p-6 mb-4 relative animate-fadeIn space-y-8 w-full max-w-[98%] mx-auto">
+          <div className="border-b border-zinc-900/40 pb-3">
+            <span className="text-[10px] uppercase tracking-widest text-[#E60026] font-bold block">Conversational Trajectory</span>
+            <span className="text-xs text-zinc-500 block mt-0.5">View analysis of your previous chats and sentiment tracking over time.</span>
+          </div>
+
+          {/* Sentiment Trend Graph (gorgeous custom SVG) */}
+          <div className="space-y-3">
+            <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-bold block">Sentiment Analysis Plot</span>
+            <div className="w-full h-72 bg-zinc-950 rounded-xl relative overflow-hidden flex flex-col justify-between p-4">
+              
+              {/* Dynamic Coordinate Grid Plot */}
+              <div className="absolute inset-0 z-0 p-4 opacity-10 pointer-events-none">
+                <div className="w-full h-full border-t border-b border-zinc-800 flex flex-col justify-between">
+                  <div className="w-full border-b border-dashed border-zinc-700 h-1/2"></div>
+                </div>
+              </div>
+
+              {/* Real SVG plot line and nodes */}
+              <svg className="w-full h-full absolute inset-0 z-10 p-6" viewBox="0 0 500 200" preserveAspectRatio="none">
+                {/* Horizontal Baseline (Neutral) */}
+                <line x1="0" y1="100" x2="500" y2="100" stroke="#E60026" strokeWidth="1" strokeDasharray="4 4" opacity="0.3" />
+                
+                {/* Plot line connecting nodes */}
+                <path
+                  d={sentimentScores.map((score, idx) => {
+                    const x = (idx / (sentimentScores.length - 1)) * 500;
+                    const y = 200 - ((score / 100) * 200);
+                    return `${idx === 0 ? 'M' : 'L'} ${x} ${y}`;
+                  }).join(' ')}
+                  fill="none"
+                  stroke="#333"
+                  strokeWidth="2"
+                  opacity="0.8"
+                />
+
+                {/* Markers with green and red highlighting */}
+                {sentimentScores.map((score, idx) => {
+                  const x = (idx / (sentimentScores.length - 1)) * 500;
+                  const y = 200 - ((score / 100) * 200);
+                  const isPositive = score > 50;
+                  const isNegative = score < 50;
+                  const color = isPositive ? '#22c55e' : isNegative ? '#ef4444' : '#a1a1aa';
+                  const glowColor = isPositive ? 'rgba(34, 197, 94, 0.4)' : isNegative ? 'rgba(239, 68, 68, 0.4)' : 'rgba(161, 161, 170, 0.2)';
+
+                  return (
+                    <g key={idx}>
+                      <circle cx={x} cy={y} r="10" fill={glowColor} />
+                      <circle cx={x} cy={y} r="5" fill={color} />
+                    </g>
+                  );
+                })}
+              </svg>
+
+              {/* Visual Labels inside the Graph */}
+              <div className="z-20 w-full flex justify-between text-[8px] text-zinc-600 font-bold uppercase tracking-widest">
+                <span>POSITIVE SENTIMENT</span>
+                <span>NEUTRAL ZONE</span>
+                <span>REFLECTIVE STATE</span>
+              </div>
+              
+              <div className="z-20 w-full flex justify-between text-[8px] text-zinc-600 font-bold uppercase tracking-widest mt-auto">
+                <span>EARLIER</span>
+                <span>TIMELINE</span>
+                <span>LATEST</span>
+              </div>
+            </div>
+          </div>
+
+          {/* TWO LARGE UNLABELED ARROWS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+            
+            {/* Arrow Pointing Left (The Past) */}
+            <div className="relative bg-zinc-950 p-5 rounded-xl transition-colors group flex flex-col justify-between space-y-4 border border-zinc-900/40">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full border border-zinc-800 flex items-center justify-center text-zinc-500 group-hover:text-[#E60026] group-hover:border-[#E60026]/30 transition-colors">
+                  <ChevronLeft className="w-6 h-6" />
+                </div>
+                <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">PAST SENTIMENT</span>
+              </div>
+              <p className="text-xs text-zinc-400 leading-relaxed font-sans italic">
+                "{getPastAdvice()}"
+              </p>
+            </div>
+
+            {/* Arrow Pointing Right (The Future) */}
+            <div className="relative bg-zinc-950 p-5 rounded-xl transition-colors group flex flex-col justify-between space-y-4 border border-zinc-900/40">
+              <div className="flex items-center gap-3">
+                <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">FUTURE OUTLOOK</span>
+                <div className="w-10 h-10 rounded-full border border-zinc-800 flex items-center justify-center text-zinc-500 group-hover:text-[#E60026] group-hover:border-[#E60026]/30 transition-colors ml-auto">
+                  <ChevronRight className="w-6 h-6" />
+                </div>
+              </div>
+              <p className="text-xs text-zinc-400 leading-relaxed font-sans italic">
+                "{getFutureAdvice()}"
+              </p>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* VIEW: MORTAL VESSEL (ACCOUNT DETAILS & STREAKS) */}
+      {activeView === 'account' && (
+        <div className="p-4 sm:p-6 mb-4 relative animate-fadeIn space-y-6 w-full max-w-[98%] mx-auto">
+          <div className="border-b border-zinc-900/40 pb-3">
+            <span className="text-[10px] uppercase tracking-widest text-[#E60026] font-bold block">Account Details</span>
+            <span className="text-xs text-zinc-500 block mt-0.5">Your account details and statistics.</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            {/* Telemetry Item: Streak */}
+            <div className="p-4 bg-zinc-950 rounded-xl space-y-1 text-center">
+              <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-bold block">CONSECUTIVE DAYS ACTIVE</span>
+              <span className="text-4xl font-extrabold text-[#E60026] block font-syne">{streakCount}</span>
+              <span className="text-[10px] text-zinc-400">Your current login streak</span>
+            </div>
+
+            {/* Telemetry Item: Sign-up Days */}
+            <div className="p-4 bg-zinc-950 rounded-xl space-y-1 text-center">
+              <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-bold block">TOTAL TIME REGISTERED</span>
+              <span className="text-4xl font-extrabold text-zinc-200 block font-syne">{daysRegistered}</span>
+              <span className="text-[10px] text-zinc-400">Total days since your account was created</span>
+            </div>
+
+          </div>
+
+          {/* Account Profile Box */}
+          <div className="p-4 bg-zinc-950 rounded-xl space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-sm">
+                👤
+              </div>
+              <div>
+                <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-bold block">USER STATUS</span>
+                <span className="text-xs text-zinc-300 font-bold">{currentUser ? currentUser.email : 'GUEST USER'}</span>
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              {!currentUser ? (
+                <button
+                  onClick={() => onOpenAuth(false)}
+                  className="px-4 py-2 bg-zinc-900 hover:text-white rounded text-xs font-bold transition-colors uppercase cursor-pointer"
+                >
+                  Sign In
+                </button>
+              ) : (
+                <button
+                  onClick={() => onOpenAuth(false)}
+                  className="px-4 py-2 bg-zinc-900 hover:text-white rounded text-xs font-bold transition-colors uppercase cursor-pointer"
+                >
+                  Manage Profile
+                </button>
+              )}
+
+              <button
+                onClick={() => {
+                  if (window.confirm("Are you sure you want to reset your local data?")) {
+                    localStorage.clear();
+                    window.location.reload();
+                  }
+                }}
+                className="px-4 py-2 bg-zinc-900/40 text-red-400 hover:bg-[#E60026]/15 hover:text-[#E60026] rounded text-xs font-bold transition-colors uppercase cursor-pointer ml-auto"
+              >
+                Purge Local Storage
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MINIMAL FOOTER */}
+      <footer className="w-full border-t border-[#F8F7F4]/5 pt-2 pb-1 mt-3 flex flex-col justify-between items-center text-[9px] tracking-[0.15em] font-mono text-zinc-600 uppercase shrink-0 gap-2">
+        <div className="flex flex-col sm:flex-row justify-center items-center w-full gap-2">
+          <button 
+            onClick={() => setShowAboutModal(true)}
+            className="hover:text-[#E60026] text-center transition-colors duration-300 focus:outline-none cursor-pointer border-b border-transparent hover:border-[#E60026]/40 pb-0.5 font-bold bg-zinc-950 px-3 py-1.5 rounded font-google-sans"
+          >
+            All rights reserved "Left Hand Products LLC" 2026
+          </button>
+        </div>
       </footer>
 
-      {/* Esoteric "About Us" Modal */}
+      {/* ESOTERIC ABOUT US MODAL */}
       {showAboutModal && (
-        <div className="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4 select-none">
-          <div className="bg-[#000000] border-2 border-[#E60026]/35 rounded-xl max-w-lg w-full p-6 relative shadow-[0_0_50px_rgba(230,0,38,0.15)] text-center">
+        <div className="fixed inset-0 bg-zinc-950/95 backdrop-blur-md z-50 flex items-center justify-center p-4 select-none animate-fadeIn">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl max-w-lg w-full p-6 relative shadow-2xl text-center font-google-sans">
             
             <button 
               onClick={() => setShowAboutModal(false)}
@@ -793,19 +1188,19 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
               </div>
             </div>
 
-            <h3 className="font-syne text-sm sm:text-base font-extrabold uppercase tracking-[0.1em] text-[#F8F7F4] mb-3">
-              ✦ THE SOUL BEHIND THE SYSTEM ✦
+            <h3 className="font-google-sans text-sm sm:text-base font-extrabold uppercase tracking-[0.1em] text-[#F8F7F4] mb-3">
+              ✦ THE SYSTEM ✦
             </h3>
             
-            <div className="text-left font-mono text-[10px] sm:text-[11px] text-zinc-400 leading-relaxed space-y-4 max-h-[350px] overflow-y-auto pr-2 scrollbar-thin">
+            <div className="text-left font-google-sans text-[10px] sm:text-[11px] text-zinc-400 leading-relaxed space-y-4 max-h-[350px] overflow-y-auto pr-2 scrollbar-thin">
               <p>
-                I, <span className="text-[#F8F7F4] font-bold">Andrew Bicknell</span>, founder and operator of <span className="text-[#E60026] font-semibold">theleft.one</span> and <span className="text-[#F8F7F4] font-bold">Left Hand Products, LLC</span>, am a person of intricate layers.
+                I, <span className="text-[#F8F7F4] font-bold">Andrew Bicknell</span>, founder and operator of <a href="https://theleft.one" target="_blank" rel="noopener noreferrer" className="font-ruthie text-base sm:text-lg text-zinc-300 hover:text-white inline-flex items-center gap-1 transition-colors mx-1">the<span className="text-[#E60026]">left</span>.one</a> and <span className="text-[#F8F7F4] font-bold">Left Hand Products, LLC</span>, am a person of intricate layers.
               </p>
               
               <p>
                 As an entrepreneur and business major, I expanded my horizons into the digital landscape—learning to write code, master modern technologies, and harness the latent power of artificial intelligence to architect systems that manifest my exact vision.
               </p>
-
+              
               <p>
                 The multi-faceted nature of my journey extends far deeper than the screen. I celebrate traditional, warm seasonal observances like Christmas and Easter alongside the cyclical, ancient rhythms of Pagan holidays. To me, these traditions are not in direct conflict with one another; it is merely human artifice that strives to make them so.
               </p>
@@ -818,68 +1213,17 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
                 Today, I live happily on our family's beautiful estate in Fountain, Colorado, sharing this chapter of life with my sister Candace, my nephew Noah, and my favorite feline companion and familiar, Tiger Lily Woods.
               </p>
 
-              <p className="border-t border-zinc-900 pt-3 text-[9px] text-zinc-600 italic">
+              <p className="border-t border-zinc-800/50 pt-3 text-[9px] text-zinc-600 italic">
                 "As above, so below; as within, so without. The left hand holds the secret of the first division."
               </p>
             </div>
 
-            <div className="mt-6">
+            <div className="mt-6 font-google-sans">
               <button
                 onClick={() => setShowAboutModal(false)}
-                className="w-full py-2.5 bg-[#E60026] hover:bg-[#ff334b] text-[#111113] font-bold text-xs uppercase tracking-widest rounded-lg transition-colors cursor-pointer"
+                className="w-full py-2.5 bg-[#E60026] hover:bg-[#ff334b] text-[#111113] font-bold text-xs uppercase tracking-widest rounded-lg transition-colors cursor-pointer font-google-sans"
               >
-                RETURN TO THE RITUAL
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
-
-      {/* Upgrade Premium Esoteric Modal */}
-      {showUpgradeModal && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-[#000000] border-2 border-amber-500/40 rounded-xl max-w-md w-full p-6 relative shadow-[0_0_50px_rgba(245,158,11,0.15)] text-center">
-            
-            <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl text-amber-400">
-                👑
-              </div>
-            </div>
-
-            <h3 className="font-syne text-lg font-bold uppercase tracking-wider text-amber-400 mb-2">UNLOCK THE ETHER</h3>
-            <p className="text-[11px] text-zinc-400 mb-6 leading-relaxed">
-              Your free spiritual ledger has reached its limit or you've attempted to awaken a premium soul from the deep Nether. Pledge a custom subscription to establish a persistent, infinite link to the ancient realm.
-            </p>
-
-            <div className="bg-[#050505] border border-zinc-900 p-4 rounded-lg mb-6 text-left">
-              <div className="flex justify-between items-center border-b border-zinc-900 pb-2 mb-2 text-xs text-zinc-200">
-                <span>PREMIUM SUBSCRIBER LEDGER</span>
-                <span className="text-amber-400 font-bold">$9.99/mo</span>
-              </div>
-              <ul className="text-[9px] text-zinc-550 space-y-1.5 list-disc pl-4">
-                <li>Unlimited questions with the high-priestess LAEVUS</li>
-                <li>Persistent connection to all 13 historical dead entities</li>
-                <li>Organic insights connected to theleft.one core architecture</li>
-                <li>Tailored 3-card Tarot analysis with persistent cache storage</li>
-              </ul>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={() => {
-                  setIsPremium(true);
-                  setShowUpgradeModal(false);
-                }}
-                className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs uppercase tracking-widest rounded-lg transition-colors shadow-lg shadow-amber-500/10"
-              >
-                Pledge Premium Access ($9.99/mo)
-              </button>
-              <button
-                onClick={() => setShowUpgradeModal(false)}
-                className="w-full py-2 bg-transparent hover:bg-zinc-950 text-zinc-500 text-xs font-bold uppercase transition-colors"
-              >
-                Return to Mortal Realm
+                RETURN TO CHAT
               </button>
             </div>
 

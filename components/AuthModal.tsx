@@ -9,7 +9,8 @@ import {
   sendPasswordResetEmail,
   User
 } from 'firebase/auth';
-import { auth, googleProvider } from '../services/firebase';
+import { auth, googleProvider, db } from '../services/firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, ShieldAlert, CheckCircle, RefreshCw } from 'lucide-react';
 
@@ -122,8 +123,35 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onUserCha
     setSuccess('');
     setLoading(true);
     try {
-      await signInWithPopup(auth, googleProvider);
+      const userCredential = await signInWithPopup(auth, googleProvider);
       setSuccess('Successfully authenticated via the astral Google link.');
+      
+      // Save login history
+      const user = userCredential.user;
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      let existingHistory = [];
+      if (userDocSnap.exists()) {
+        existingHistory = userDocSnap.data().loginHistory || [];
+      }
+      const newHistory = [
+        {
+          timestamp: new Date().toISOString(),
+          userAgent: navigator.userAgent,
+          action: 'login_google'
+        },
+        ...existingHistory
+      ].slice(0, 50);
+
+      await setDoc(userDocRef, {
+        email: user.email,
+        uid: user.uid,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        lastLoginAt: new Date().toISOString(),
+        loginHistory: newHistory
+      }, { merge: true });
+
       setTimeout(() => {
         onClose();
       }, 1500);
@@ -167,6 +195,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onUserCha
         // Send email verification
         await sendEmailVerification(userCredential.user);
         setSuccess('Account summoned successfully! A mystic verification link has been sent to your inbox. Please verify to awaken full powers.');
+        
+        // Save initial login/register information
+        const user = userCredential.user;
+        const userDocRef = doc(db, 'users', user.uid);
+        await setDoc(userDocRef, {
+          email: user.email,
+          uid: user.uid,
+          createdAt: new Date().toISOString(),
+          lastLoginAt: new Date().toISOString(),
+          loginHistory: [{
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            action: 'register'
+          }]
+        }, { merge: true });
+
         setEmail('');
         setPassword('');
         setIsRegister(false);
@@ -177,6 +221,30 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onUserCha
           setError('Your cosmic email coordinates are not yet verified. Please verify your email.');
         } else {
           setSuccess('Vessel authenticated. Welcome back.');
+
+          // Save login history
+          const user = userCredential.user;
+          const userDocRef = doc(db, 'users', user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          let existingHistory = [];
+          if (userDocSnap.exists()) {
+            existingHistory = userDocSnap.data().loginHistory || [];
+          }
+          const newHistory = [
+            {
+              timestamp: new Date().toISOString(),
+              userAgent: navigator.userAgent,
+              action: 'login_email'
+            },
+            ...existingHistory
+          ].slice(0, 50);
+
+          await setDoc(userDocRef, {
+            email: user.email,
+            uid: user.uid,
+            lastLoginAt: new Date().toISOString(),
+            loginHistory: newHistory
+          }, { merge: true });
         }
         setTimeout(() => {
           onClose();
