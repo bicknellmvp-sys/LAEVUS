@@ -28,5 +28,4 @@ dist-ssr
 .env.local
 .env.*.local
 firebase-applet-config.json
-.env
-.env.*
+
