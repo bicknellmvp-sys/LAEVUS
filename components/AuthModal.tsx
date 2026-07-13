@@ -60,7 +60,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onUserCha
       onUserChanged(user);
     });
     return () => unsubscribe();
-  }, [onUserChanged]);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {

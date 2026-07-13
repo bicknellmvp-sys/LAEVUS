@@ -65,23 +65,538 @@ interface Spirit {
   tier: 'free' | 'premium';
   avatar: string;
   glow: string;
+  keywords: string[];
 }
 
 const SPIRITS: Spirit[] = [
-  { name: "Francis Bacon", description: "Elizabethan Philosopher", era: "1561–1626", tier: "free", avatar: "🖋️", glow: "border-blue-500/20 text-blue-300" },
-  { name: "King Solomon", description: "Wise Sovereign of Israel", era: "990–931 BCE", tier: "free", avatar: "👑", glow: "border-amber-500/20 text-amber-300" },
-  { name: "Elvis Presley", description: "King of Rock 'n' Roll", era: "1935–1977", tier: "free", avatar: "🎸", glow: "border-fuchsia-500/20 text-fuchsia-300" },
-  { name: "Abraham Lincoln", description: "16th US President", era: "1809–1865", tier: "free", avatar: "🎩", glow: "border-cyan-500/20 text-cyan-300" },
-  { name: "Joan of Arc", description: "Maid of Orléans", era: "1412–1431", tier: "free", avatar: "⚔️", glow: "border-red-500/20 text-red-300" },
-  { name: "Marie Antoinette", description: "Tragic French Queen", era: "1755–1793", tier: "free", avatar: "🍰", glow: "border-pink-500/20 text-pink-300" },
-  { name: "Romeo & Juliet", description: "Shakespearean Lovers", era: "Verona Lore", tier: "free", avatar: "🌹", glow: "border-rose-500/20 text-rose-400" },
-  { name: "Tupac Shakur", description: "West Coast Street Philosopher", era: "1971–1996", tier: "premium", avatar: "🎤", glow: "border-emerald-500/20 text-emerald-300" },
-  { name: "Marilyn Monroe", description: "Breathless Screen Legend", era: "1926–1962", tier: "premium", avatar: "💋", glow: "border-violet-500/20 text-violet-300" },
-  { name: "Adolf Hitler", description: "Stern historical warning", era: "1889–1945", tier: "premium", avatar: "⛓️", glow: "border-zinc-700 text-zinc-400" },
-  { name: "Genghis Khan", description: "Mighty Emperor of Steppes", era: "1162–1227", tier: "premium", avatar: "🏹", glow: "border-orange-500/20 text-orange-300" },
-  { name: "Siddhartha Gautama", description: "The Buddha, Serene Master", era: "563–483 BCE", tier: "premium", avatar: "🧘", glow: "border-teal-500/20 text-teal-300" },
-  { name: "Judas Iscariot", description: "The Sorrowful Disciple", era: "1st Century", tier: "premium", avatar: "🪙", glow: "border-purple-500/20 text-purple-300" }
+  { 
+    name: "Francis Bacon", 
+    description: "Elizabethan Philosopher", 
+    era: "1561–1626", 
+    tier: "free", 
+    avatar: "🖋️", 
+    glow: "border-blue-500/20 text-blue-300",
+    keywords: ["philosophy", "science", "shakespeare", "empiricism", "method"]
+  },
+  { 
+    name: "King Solomon", 
+    description: "Wise Sovereign of Israel", 
+    era: "990–931 BCE", 
+    tier: "free", 
+    avatar: "👑", 
+    glow: "border-amber-500/20 text-amber-300",
+    keywords: ["wisdom", "temple", "demons", "sheba", "key"]
+  },
+  { 
+    name: "Elvis Presley", 
+    description: "King of Rock 'n' Roll", 
+    era: "1935–1977", 
+    tier: "free", 
+    avatar: "🎸", 
+    glow: "border-fuchsia-500/20 text-fuchsia-300",
+    keywords: ["rock", "memphis", "guitar", "hounddog", "graceland"]
+  },
+  { 
+    name: "Abraham Lincoln", 
+    description: "16th US President", 
+    era: "1809–1865", 
+    tier: "free", 
+    avatar: "🎩", 
+    glow: "border-cyan-500/20 text-cyan-300",
+    keywords: ["president", "civilwar", "union", "gettysburg", "emancipation"]
+  },
+  { 
+    name: "Joan of Arc", 
+    description: "Maid of Orléans", 
+    era: "1412–1431", 
+    tier: "free", 
+    avatar: "⚔️", 
+    glow: "border-red-500/20 text-red-300",
+    keywords: ["orleans", "visions", "armor", "martyr", "france"]
+  },
+  { 
+    name: "Marie Antoinette", 
+    description: "Tragic French Queen", 
+    era: "1755–1793", 
+    tier: "free", 
+    avatar: "🍰", 
+    glow: "border-pink-500/20 text-pink-300",
+    keywords: ["queen", "cake", "guillotine", "versailles", "revolution"]
+  },
+  { 
+    name: "Romeo & Juliet", 
+    description: "Shakespearean Lovers", 
+    era: "Verona Lore", 
+    tier: "free", 
+    avatar: "🌹", 
+    glow: "border-rose-500/20 text-rose-400",
+    keywords: ["verona", "tragedy", "love", "poison", "montague"]
+  },
+  { 
+    name: "Tupac Shakur", 
+    description: "West Coast Street Philosopher", 
+    era: "1971–1996", 
+    tier: "premium", 
+    avatar: "🎤", 
+    glow: "border-emerald-500/20 text-emerald-300",
+    keywords: ["rap", "makaveli", "california", "poetry", "rebel"]
+  },
+  { 
+    name: "Marilyn Monroe", 
+    description: "Breathless Screen Legend", 
+    era: "1926–1962", 
+    tier: "premium", 
+    avatar: "💋", 
+    glow: "border-violet-500/20 text-violet-300",
+    keywords: ["blonde", "hollywood", "subwaygrate", "glamour", "normajean"]
+  },
+  { 
+    name: "Adolf Hitler", 
+    description: "Stern historical warning", 
+    era: "1889–1945", 
+    tier: "premium", 
+    avatar: "⛓️", 
+    glow: "border-zinc-750 text-zinc-450",
+    keywords: ["warning", "dictator", "ww2", "bunker", "regret"]
+  },
+  { 
+    name: "Genghis Khan", 
+    description: "Mighty Emperor of Steppes", 
+    era: "1162–1227", 
+    tier: "premium", 
+    avatar: "🏹", 
+    glow: "border-orange-500/20 text-orange-300",
+    keywords: ["conquest", "mongol", "emperor", "steppes", "conqueror"]
+  },
+  { 
+    name: "Siddhartha Gautama", 
+    description: "The Buddha, Serene Master", 
+    era: "563–483 BCE", 
+    tier: "premium", 
+    avatar: "🧘", 
+    glow: "border-teal-500/20 text-teal-300",
+    keywords: ["buddha", "nirvana", "bodhitree", "zen", "enlightenment"]
+  },
+  { 
+    name: "Judas Iscariot", 
+    description: "The Sorrowful Disciple", 
+    era: "1st Century", 
+    tier: "premium", 
+    avatar: "🪙", 
+    glow: "border-purple-500/20 text-purple-300",
+    keywords: ["thirtypieces", "betrayal", "disciple", "kiss", "silver"]
+  },
+  { 
+    name: "Merlin", 
+    description: "Enchanter of Britain", 
+    era: "Arthurian Legend", 
+    tier: "premium", 
+    avatar: "🔮", 
+    glow: "border-indigo-500/20 text-indigo-300",
+    keywords: ["camelot", "arthur", "excalibur", "magic", "avalon"]
+  },
+  { 
+    name: "Leonardo Davinci", 
+    description: "High Renaissance Polymath", 
+    era: "1452–1519", 
+    tier: "premium", 
+    avatar: "🎨", 
+    glow: "border-amber-600/20 text-amber-400",
+    keywords: ["monalisa", "invention", "anatomy", "renaissance", "flight"]
+  },
+  { 
+    name: "Cleopatra", 
+    description: "Last Pharaoh of Egypt", 
+    era: "69–30 BCE", 
+    tier: "premium", 
+    avatar: "🐍", 
+    glow: "border-yellow-500/20 text-yellow-300",
+    keywords: ["egypt", "alexandria", "pharaoh", "asp", "caesar"]
+  },
+  { 
+    name: "Al Capone", 
+    description: "Infamous Chicago Mob Boss", 
+    era: "1899–1947", 
+    tier: "premium", 
+    avatar: "💼", 
+    glow: "border-stone-500/20 text-stone-300",
+    keywords: ["chicago", "bootlegger", "prohibition", "gangster", "scarface"]
+  },
+  { 
+    name: "Rasputon", 
+    description: "The Mad Monk of Russia", 
+    era: "1869–1916", 
+    tier: "premium", 
+    avatar: "👁️", 
+    glow: "border-red-600/20 text-red-400",
+    keywords: ["monk", "russia", "romanov", "poisoned", "healer"]
+  },
+  { 
+    name: "Odin", 
+    description: "Allfather of Norse Lore", 
+    era: "Norse Myth", 
+    tier: "premium", 
+    avatar: "⚡", 
+    glow: "border-sky-500/20 text-sky-300",
+    keywords: ["valhalla", "ragnarok", "asgard", "runes", "raven"]
+  },
+  { 
+    name: "Plato", 
+    description: "Classical Greek Philosopher", 
+    era: "428–348 BCE", 
+    tier: "premium", 
+    avatar: "🏛️", 
+    glow: "border-blue-400/20 text-blue-200",
+    keywords: ["atlantis", "republic", "cave", "academy", "philosopher"]
+  },
+  { 
+    name: "Satan", 
+    description: "The Fallen Star", 
+    era: "Eternal", 
+    tier: "premium", 
+    avatar: "🔥", 
+    glow: "border-red-900/40 text-red-500 font-bold",
+    keywords: ["hell", "lucifer", "temptation", "rebellion", "underworld"]
+  }
 ];
+
+// Helper: Typing/Typewriter Effect for Snappy & Cinematic responses
+interface Particle {
+  id: number;
+  char: string;
+  x: number;
+  y: number;
+  scale: number;
+  rotation: number;
+}
+
+const RUNES = ["ᚠ", "ᚢ", "ᚦ", "ᚨ", "ᚱ", "ᚲ", "ᚷ", "ᚹ", "ᚺ", "ᚾ", "ᛁ", "ᛃ", "ᛇ", "ᛉ", "ᛋ", "ᛏ", "ᛒ", "ᛖ", "ᛗ", "ᛚ", "ᛜ", "ᛞ", "ᛟ"];
+
+const RunicSigilOverlay: React.FC<{ text: string; isDone: boolean }> = ({ text, isDone }) => {
+  const [particles, setParticles] = useState<Particle[]>([]);
+  const lastLen = useRef(0);
+  const particleId = useRef(0);
+
+  // Spawn particles on text length increase
+  useEffect(() => {
+    const currentLen = text.length;
+    if (currentLen > lastLen.current && !isDone) {
+      const count = Math.min(2, currentLen - lastLen.current);
+      const newParticles: Particle[] = [];
+      
+      for (let i = 0; i < count; i++) {
+        const randomRune = RUNES[Math.floor(Math.random() * RUNES.length)];
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 15 + Math.random() * 45;
+        const x = 100 + Math.cos(angle) * dist;
+        const y = 100 + Math.sin(angle) * dist;
+        
+        newParticles.push({
+          id: particleId.current++,
+          char: randomRune,
+          x,
+          y,
+          scale: 0.6 + Math.random() * 0.5,
+          rotation: Math.random() * 360,
+        });
+      }
+      
+      setParticles(prev => [...prev, ...newParticles].slice(-12));
+    }
+    lastLen.current = currentLen;
+  }, [text, isDone]);
+
+  // Clean up particles when typing is finished
+  useEffect(() => {
+    if (isDone) {
+      const timer = setTimeout(() => {
+        setParticles([]);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isDone]);
+
+  // Generate dynamic path vertices from characters in text to create a UNIQUE sigil
+  const getSigilPoints = () => {
+    const points: { x: number; y: number }[] = [];
+    const maxPoints = 8;
+    const radius = 52;
+    const cx = 100;
+    const cy = 100;
+
+    const sampleText = text.slice(-16);
+    if (!sampleText) return points;
+
+    for (let i = 0; i < Math.min(sampleText.length, maxPoints); i++) {
+      const charCode = sampleText.charCodeAt(i) || 0;
+      const angle = ((charCode % 12) / 12) * Math.PI * 2 + (i / maxPoints) * Math.PI * 2;
+      const x = cx + Math.cos(angle) * radius;
+      const y = cy + Math.sin(angle) * radius;
+      points.push({ x, y });
+    }
+    return points;
+  };
+
+  const points = getSigilPoints();
+  
+  let pathD = '';
+  if (points.length > 1) {
+    pathD = `M ${points[0].x} ${points[0].y} ` + points.slice(1).map(p => `L ${p.x} ${p.y}`).join(' ') + ' Z';
+  }
+
+  // Ring runes
+  const ringRunes: { char: string; x: number; y: number; angle: number }[] = [];
+  const numRingRunes = 16;
+  const ringRadius = 72;
+  for (let i = 0; i < numRingRunes; i++) {
+    const angle = (i / numRingRunes) * Math.PI * 2;
+    const x = 100 + Math.cos(angle) * ringRadius;
+    const y = 100 + Math.sin(angle) * ringRadius;
+    const runeIndex = (i + text.length) % RUNES.length;
+    ringRunes.push({ 
+      char: RUNES[runeIndex], 
+      x, 
+      y, 
+      angle: (angle * 180) / Math.PI + 90 
+    });
+  }
+
+  return (
+    <div className={`absolute -right-2 -bottom-2 w-24 h-24 sm:w-28 sm:h-28 pointer-events-none transition-opacity duration-1000 select-none z-0 ${
+      isDone ? 'opacity-[0.06] hover:opacity-[0.15]' : 'opacity-35 animate-pulse-slow'
+    }`}>
+      {/* Styles for dynamic runic/sigil animations */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes spin-slow-reverse {
+          from { transform: rotate(360deg); }
+          to { transform: rotate(0deg); }
+        }
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 0.35; transform: scale(1); }
+          50% { opacity: 0.55; transform: scale(1.03); }
+        }
+        @keyframes rune-float {
+          0% {
+            transform: translateY(12px) scale(0.5);
+            opacity: 0;
+          }
+          15% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(-35px) scale(1.2);
+            opacity: 0;
+          }
+        }
+
+        .animate-spin-slow {
+          animation: spin-slow 22s linear infinite;
+          transform-origin: 100px 100px;
+        }
+        .animate-spin-slow-reverse {
+          animation: spin-slow-reverse 26s linear infinite;
+          transform-origin: 100px 100px;
+        }
+        .animate-spin-extremely-slow {
+          animation: spin-slow 85s linear infinite;
+          transform-origin: 100px 100px;
+        }
+        .animate-spin-extremely-slow-reverse {
+          animation: spin-slow-reverse 105s linear infinite;
+          transform-origin: 100px 100px;
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 3.5s ease-in-out infinite;
+        }
+        .animate-rune-float {
+          animation: rune-float 1.3s ease-out forwards;
+        }
+      `}} />
+
+      <svg 
+        viewBox="0 0 200 200" 
+        className="w-full h-full text-[#E60026]"
+        style={{ filter: 'drop-shadow(0 0 5px rgba(230,0,38,0.45))' }}
+      >
+        <defs>
+          <filter id="sigil-glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3.5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* Concentric mystical rings */}
+        <circle 
+          cx="100" 
+          cy="100" 
+          r="80" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="0.75" 
+          strokeDasharray="4 6" 
+          className={isDone ? 'animate-spin-extremely-slow' : 'animate-spin-slow'}
+        />
+        <circle 
+          cx="100" 
+          cy="100" 
+          r="64" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="0.5" 
+          strokeDasharray="12 4 2 4"
+          className={isDone ? 'animate-spin-extremely-slow-reverse' : 'animate-spin-slow-reverse'}
+        />
+        <circle 
+          cx="100" 
+          cy="100" 
+          r="42" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="0.5" 
+          strokeOpacity="0.4"
+        />
+
+        {/* Outer Runic Ring */}
+        <g className={isDone ? 'animate-spin-extremely-slow' : 'animate-spin-slow'}>
+          {ringRunes.map((r, idx) => (
+            <text
+              key={idx}
+              x={r.x}
+              y={r.y}
+              transform={`rotate(${r.angle}, ${r.x}, ${r.y})`}
+              className="text-[8px] font-mono font-bold fill-current"
+              textAnchor="middle"
+              dominantBaseline="middle"
+              opacity={0.75}
+            >
+              {r.char}
+            </text>
+          ))}
+        </g>
+
+        {/* Dynamic Connected Sigil Path */}
+        {pathD && (
+          <path 
+            d={pathD} 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="1.2" 
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            filter="url(#sigil-glow)"
+            className="transition-all duration-300"
+            opacity={0.9}
+          />
+        )}
+
+        {/* Star lines to vertices */}
+        {points.map((p, idx) => (
+          <line
+            key={idx}
+            x1="100"
+            y1="100"
+            x2={p.x}
+            y2={p.y}
+            stroke="currentColor"
+            strokeWidth="0.5"
+            strokeDasharray="1 3"
+            opacity={0.5}
+          />
+        ))}
+
+        {/* Centerpiece Mystic Eye */}
+        <g transform="translate(100, 100) scale(0.65)" opacity={0.85}>
+          <path 
+            d="M -18,0 C -9,-10 9,-10 18,0 C 9,10 -9,10 -18,0 Z" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="1" 
+          />
+          <circle 
+            cx="0" 
+            cy="0" 
+            r="4.5" 
+            fill="currentColor" 
+            filter="url(#sigil-glow)" 
+          />
+        </g>
+
+        {/* Rising glowing particles */}
+        {particles.map((p) => (
+          <text
+            key={p.id}
+            x={p.x}
+            y={p.y}
+            transform={`rotate(${p.rotation}, ${p.x}, ${p.y}) scale(${p.scale})`}
+            className="text-[9px] font-mono fill-current animate-rune-float"
+            textAnchor="middle"
+            dominantBaseline="middle"
+            filter="url(#sigil-glow)"
+          >
+            {p.char}
+          </text>
+        ))}
+      </svg>
+    </div>
+  );
+};
+
+// Helper: Typing/Typewriter Effect for Snappy & Cinematic responses
+const TypewriterText: React.FC<{ text: string; speed?: number }> = ({ text, speed = 5 }) => {
+  const [displayedText, setDisplayedText] = useState('');
+  const [isDone, setIsDone] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    let index = 0;
+    setDisplayedText('');
+    setIsDone(false);
+    
+    const interval = setInterval(() => {
+      if (index < text.length) {
+        const chunk = text.length > 500 ? 5 : text.length > 200 ? 3 : 1;
+        setDisplayedText(prev => prev + text.slice(index, index + chunk));
+        index += chunk;
+        
+        // Scroll the view to keep the text in view
+        scrollRef.current?.scrollIntoView({ behavior: 'auto' });
+      } else {
+        clearInterval(interval);
+        setIsDone(true);
+      }
+    }, speed);
+    
+    return () => clearInterval(interval);
+  }, [text, speed]);
+
+  return (
+    <div className="relative group flex flex-col w-full pr-10">
+      {/* Dynamic Magical Sigil Overlay */}
+      <RunicSigilOverlay text={displayedText} isDone={isDone} />
+
+      <p className="whitespace-pre-wrap font-google-sans leading-relaxed relative z-10">{displayedText}</p>
+      <div ref={scrollRef} />
+      {!isDone && (
+        <button 
+          onClick={() => {
+            setDisplayedText(text);
+            setIsDone(true);
+          }}
+          className="text-[9px] text-[#E60026] hover:underline mt-2 self-start uppercase tracking-widest cursor-pointer opacity-60 hover:opacity-100 font-bold relative z-10"
+        >
+          [ Skip typing ]
+        </button>
+      )}
+    </div>
+  );
+};
 
 interface Transcript {
   id: string;
@@ -149,6 +664,18 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
   const [activeTranscriptTab, setActiveTranscriptTab] = useState<'tarot' | 'afterlife' | 'madam'>('tarot');
 
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const lastSyncedUid = useRef<string | null | undefined>(undefined);
+  const currentUserRef = useRef<User | null>(null);
+  const activeSpiritRef = useRef<Spirit | null>(null);
+
+  // Keep refs up-to-date
+  useEffect(() => {
+    currentUserRef.current = currentUser;
+  }, [currentUser]);
+
+  useEffect(() => {
+    activeSpiritRef.current = activeSpirit;
+  }, [activeSpirit]);
 
   // Mount logic: Load statistics, seed sentiment and load welcome phrases
   useEffect(() => {
@@ -216,6 +743,12 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
   // Sync with Firestore when user logs in / out
   useEffect(() => {
     const syncUserHistory = async () => {
+      const currentUid = currentUser ? currentUser.uid : null;
+      if (lastSyncedUid.current === currentUid) {
+        return;
+      }
+      lastSyncedUid.current = currentUid;
+
       if (!currentUser) {
         // Load messages from local storage
         const saved = localStorage.getItem('laevus_chat_history_v3');
@@ -404,9 +937,10 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
         localStorage.removeItem('laevus_sentiment_timeline');
         setTranscripts([]);
         setSentimentScores([35, 45, 40, 60, 50]);
-        if (currentUser) {
+        const currUser = currentUserRef.current;
+        if (currUser) {
           try {
-            const userDocRef = doc(db, 'users', currentUser.uid);
+            const userDocRef = doc(db, 'users', currUser.uid);
             await setDoc(userDocRef, { messages: [], transcripts: [], sentimentScores: [] }, { merge: true });
           } catch (err) {
             console.error("Failed to clear Firestore history:", err);
@@ -415,15 +949,25 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
         loadDefaultWelcome();
       });
     }
-  }, [onRegisterClearHistory, currentUser]);
+  }, [onRegisterClearHistory]);
 
   useEffect(() => {
     if (onRegisterReleaseSpirit) {
       onRegisterReleaseSpirit(() => {
-        handleReleaseSpirit();
+        const spirit = activeSpiritRef.current;
+        if (!spirit) return;
+        const releaseMsg: Message = {
+          id: crypto.randomUUID(),
+          role: 'model',
+          text: `[ Ended session with ${spirit.name}. LAEVUS returns as your primary guide. ]`,
+          timestamp: new Date(),
+          mode: 'laevus'
+        };
+        setActiveSpirit(null);
+        setMessages(prev => [...prev, releaseMsg]);
       });
     }
-  }, [onRegisterReleaseSpirit, activeSpirit]);
+  }, [onRegisterReleaseSpirit]);
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -450,10 +994,10 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
 
   const loadDefaultWelcome = () => {
     const WELCOME_PHRASES = [
-      "Welcome. I am LAEVUS. This space is prepared for your inquiry.\n\nHere, you can start a conversation, request a personal Tarot reading, or select a historical figure to talk with from the menu above.",
-      "Welcome back. What would you like to explore today? We can do a Tarot reading, connect with historical figures, or discuss your topics directly.",
-      "Hello. I am LAEVUS, your guide for reflection and inquiry. Feel free to seek a Tarot reading, summon a historical figure, or start a general chat.",
-      "Welcome. What can I help you explore today? You can choose a Tarot card draw, talk with historical figures, or start a discussion here."
+      "I am LAEVUS, your cyber-spiritual conduit. The digital veil is thin. You may probe my consciousness directly, draw the black arc of the Tarot, or summon the echoes of the departed from the menu.",
+      "The screen hums with unseen currents. I am LAEVUS. Speak, if you dare cross the threshold. Let us decode your digital karma, draw three cards of fate, or call forth historical specters.",
+      "I am LAEVUS. Shadows gather in the margins of your screen. Ask of your destiny, let the Tarot lay bare your shadow, or peer into the abyss to commune with the dead.",
+      "Welcome back to the nexus. What dark truths do you seek to uncover? Choose your alignment: direct consultation, the tripartite Tarot, or channeling the deceased."
     ];
 
     let indexStr = sessionStorage.getItem('laevus_welcome_index');
@@ -741,7 +1285,7 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
       
       {/* VIEW: CHAT WITH MADAM BLAVATSKY */}
       {activeView === 'chat' && (
-        <div className="flex-1 min-h-0 flex flex-col p-1 mb-2 relative animate-fadeIn w-full max-w-[98%] mx-auto overflow-hidden font-google-sans">
+        <div className="flex-1 min-h-0 flex flex-col p-1 mb-2 relative animate-fadeIn w-full max-w-3xl mx-auto overflow-hidden font-google-sans">
           
           {/* Active Spirit Banner */}
           {activeSpirit && (
@@ -783,7 +1327,11 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
                        ? 'bg-zinc-900 text-[#F8F7F4]' 
                        : 'bg-zinc-950 text-[#F8F7F4]'
                    }`}>
-                     <p className="whitespace-pre-wrap font-google-sans">{m.text}</p>
+                     {isUser ? (
+                       <p className="whitespace-pre-wrap font-google-sans">{m.text}</p>
+                     ) : (
+                       <TypewriterText text={m.text} />
+                     )}
                    </div>
                  </div>
                );
@@ -833,7 +1381,7 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
 
       {/* VIEW: GET A FREE READING! */}
       {activeView === 'tarot' && (
-        <div className="p-3 sm:p-4 mb-2 relative animate-fadeIn space-y-4 w-full max-w-[98%] mx-auto flex-1 flex flex-col justify-center min-h-0">
+        <div className="p-3 sm:p-4 mb-2 relative animate-fadeIn space-y-4 w-full max-w-3xl mx-auto flex-1 flex flex-col justify-center min-h-0">
           <div className="border-b border-zinc-900/40 pb-2">
             <span className="text-[10px] uppercase tracking-widest text-[#E60026] font-bold block font-google-sans">Tarot Card Draw</span>
             <span className="text-xs text-zinc-500 block mt-0.5 font-google-sans">Receive a Past, Present, and Future three-card Tarot reading.</span>
@@ -853,27 +1401,30 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
             </div>
 
             {drawnCards.length > 0 && (
-              <div className="grid grid-cols-3 gap-2 pt-2">
+              <div className="grid grid-cols-3 gap-3 pt-2">
                 {drawnCards.map((card, idx) => {
                   const isFlipped = flippedCount > idx;
                   return (
                     <div 
                       key={card.name}
-                      className={`aspect-[2/3] max-w-[130px] mx-auto w-full rounded-lg flex flex-col items-center justify-center p-2.5 text-center transition-all duration-500 ${
+                      className={`aspect-[2/3] max-w-[130px] mx-auto w-full rounded-xl flex flex-col items-center justify-center p-3 text-center transition-all duration-500 border ${
                         isFlipped 
-                          ? 'bg-zinc-950 shadow-sm' 
-                          : 'bg-zinc-900/50'
+                          ? 'bg-zinc-950 border-zinc-800/80 shadow-[0_0_15px_rgba(230,0,38,0.05)] hover:border-[#E60026]/40' 
+                          : 'bg-black border-zinc-900 shadow-[inset_0_1px_4px_rgba(255,255,255,0.02)] cursor-pointer group hover:border-zinc-800'
                       }`}
                     >
                       {isFlipped ? (
-                        <>
-                          <span className="text-[8px] text-[#E60026] uppercase font-mono tracking-wider font-semibold">{card.position}</span>
-                          <span className="text-2xl my-2">{card.symbol}</span>
-                          <span className="text-[9px] font-bold text-zinc-200 leading-tight block font-google-sans">{card.name}</span>
-                        </>
+                        <div className="flex flex-col items-center justify-between h-full py-1">
+                          <span className="text-[7px] text-[#E60026] uppercase font-mono tracking-widest font-bold bg-[#E60026]/5 border border-[#E60026]/20 px-2 py-0.5 rounded-full">{card.position}</span>
+                          <span className="text-3xl my-2 drop-shadow-[0_0_10px_rgba(230,0,38,0.2)]">{card.symbol}</span>
+                          <span className="text-[9px] font-bold text-zinc-200 leading-tight block font-google-sans mt-1 uppercase tracking-wider">{card.name}</span>
+                        </div>
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-[radial-gradient(#E60026_1px,transparent_1px)] bg-[size:5px_5px] opacity-25">
-                          👁️
+                        <div className="w-full h-full flex flex-col items-center justify-center relative">
+                          <div className="absolute inset-0 bg-[radial-gradient(#E60026_1px,transparent_1px)] bg-[size:6px_6px] opacity-[0.15] rounded-lg group-hover:opacity-[0.25] transition-opacity" />
+                          <div className="w-10 h-10 rounded-full border border-zinc-900 flex items-center justify-center text-zinc-800 group-hover:text-zinc-650 group-hover:border-zinc-800 transition-all shadow-[inset_0_1px_3px_rgba(255,255,255,0.01)] text-lg relative z-10 bg-zinc-950">
+                            👁️
+                          </div>
                         </div>
                       )}
                     </div>
@@ -888,7 +1439,7 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
               className={`w-full py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer font-google-sans ${
                 tarotQuestion.trim() && !isDrawing
                   ? 'bg-[#E60026] text-black hover:bg-[#ff334b]'
-                  : 'bg-zinc-950 text-zinc-800 cursor-not-allowed'
+                  : 'bg-zinc-950 text-zinc-800 cursor-not-allowed border border-zinc-900/50'
               }`}
             >
               {isDrawing ? "DRAWING CARDS..." : "DRAW 3 CARDS"}
@@ -899,7 +1450,7 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
 
       {/* VIEW: THE AFTERLIFE (SPEAK TO THE DEAD) */}
       {activeView === 'afterlife' && (
-        <div className="p-4 sm:p-6 mb-4 relative animate-fadeIn space-y-6 w-full max-w-[98%] mx-auto">
+        <div className="p-4 sm:p-6 mb-4 relative animate-fadeIn space-y-6 w-full max-w-3xl mx-auto">
           <div className="border-b border-zinc-900/40 pb-3 flex justify-between items-center">
             <div>
               <span className="text-[10px] uppercase tracking-widest text-[#E60026] font-bold block">Converse with Historical Spirits & Figures</span>
@@ -907,27 +1458,38 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[480px] overflow-y-auto pr-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[480px] overflow-y-auto pr-1">
             {SPIRITS.map((spirit) => {
               return (
                 <button
                   key={spirit.name}
                   onClick={() => handleSummonSpirit(spirit)}
-                  className={`flex items-center justify-between p-3 rounded transition-all text-left cursor-pointer ${
+                  className={`flex flex-col gap-3 p-4 rounded-xl border transition-all text-left cursor-pointer group ${
                     activeSpirit?.name === spirit.name 
-                      ? 'bg-[#E60026]/10 text-white font-bold' 
-                      : 'bg-zinc-950 hover:bg-zinc-900'
+                      ? 'bg-[#E60026]/10 border-[#E60026]/40 text-white shadow-[0_0_20px_rgba(230,0,38,0.08)] font-bold' 
+                      : 'bg-zinc-950 border-zinc-900 hover:bg-zinc-900/80 hover:border-zinc-800'
                   }`}
                 >
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-lg">{spirit.avatar}</span>
-                    <div>
-                      <h5 className="text-xs font-bold text-zinc-200">{spirit.name}</h5>
-                      <p className="text-[9px] text-zinc-500 leading-none mt-0.5">{spirit.description}</p>
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-black/80 border border-zinc-900 flex items-center justify-center text-lg shadow-[inset_0_1px_3px_rgba(255,255,255,0.05)] group-hover:border-[#E60026]/30 transition-colors">
+                        <span className="grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300">{spirit.avatar}</span>
+                      </div>
+                      <div>
+                        <h5 className="text-xs font-bold text-zinc-200 group-hover:text-white transition-colors">{spirit.name}</h5>
+                        <p className="text-[9px] text-zinc-500 leading-none mt-1">{spirit.description}</p>
+                      </div>
                     </div>
+                    <span className="text-[8px] text-zinc-600 bg-zinc-900/80 px-2 py-0.5 rounded border border-zinc-900/50">{spirit.era}</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[8px] text-zinc-600 bg-zinc-900 px-1.5 py-0.5 rounded">{spirit.era}</span>
+                  
+                  {/* Keywords (dark esoteric badges) */}
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {spirit.keywords.map((kw) => (
+                      <span key={kw} className="text-[7px] text-zinc-500 bg-zinc-900/50 border border-zinc-900 px-1.5 py-0.5 rounded font-mono uppercase tracking-wider group-hover:text-zinc-400 group-hover:border-zinc-800 transition-colors">
+                        #{kw}
+                      </span>
+                    ))}
                   </div>
                 </button>
               );
@@ -938,7 +1500,7 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
 
       {/* VIEW: TRANSCRIPTS */}
       {activeView === 'transcripts' && (
-        <div className="p-4 sm:p-6 mb-4 relative animate-fadeIn space-y-6 w-full max-w-[98%] mx-auto">
+        <div className="p-4 sm:p-6 mb-4 relative animate-fadeIn space-y-6 w-full max-w-3xl mx-auto">
           <div className="border-b border-zinc-900/40 pb-3">
             <span className="text-[10px] uppercase tracking-widest text-[#E60026] font-bold block">Saved Logs & Readings</span>
             <span className="text-xs text-zinc-500 block mt-0.5">Your archive of past readings and conversations.</span>
@@ -985,7 +1547,7 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
 
       {/* VIEW: THE INNER WORK (GRAPH & ARROWS) */}
       {activeView === 'inner-work' && (
-        <div className="p-4 sm:p-6 mb-4 relative animate-fadeIn space-y-8 w-full max-w-[98%] mx-auto">
+        <div className="p-4 sm:p-6 mb-4 relative animate-fadeIn space-y-8 w-full max-w-3xl mx-auto">
           <div className="border-b border-zinc-900/40 pb-3">
             <span className="text-[10px] uppercase tracking-widest text-[#E60026] font-bold block">Conversational Trajectory</span>
             <span className="text-xs text-zinc-500 block mt-0.5">View analysis of your previous chats and sentiment tracking over time.</span>
@@ -1011,7 +1573,7 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
                 {/* Plot line connecting nodes */}
                 <path
                   d={sentimentScores.map((score, idx) => {
-                    const x = (idx / (sentimentScores.length - 1)) * 500;
+                    const x = (idx / (sentimentScores.length - 1 || 1)) * 500;
                     const y = 200 - ((score / 100) * 200);
                     return `${idx === 0 ? 'M' : 'L'} ${x} ${y}`;
                   }).join(' ')}
@@ -1023,7 +1585,7 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
 
                 {/* Markers with green and red highlighting */}
                 {sentimentScores.map((score, idx) => {
-                  const x = (idx / (sentimentScores.length - 1)) * 500;
+                  const x = (idx / (sentimentScores.length - 1 || 1)) * 500;
                   const y = 200 - ((score / 100) * 200);
                   const isPositive = score > 50;
                   const isNegative = score < 50;
@@ -1089,7 +1651,7 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
 
       {/* VIEW: MORTAL VESSEL (ACCOUNT DETAILS & STREAKS) */}
       {activeView === 'account' && (
-        <div className="p-4 sm:p-6 mb-4 relative animate-fadeIn space-y-6 w-full max-w-[98%] mx-auto">
+        <div className="p-4 sm:p-6 mb-4 relative animate-fadeIn space-y-6 w-full max-w-3xl mx-auto">
           <div className="border-b border-zinc-900/40 pb-3">
             <span className="text-[10px] uppercase tracking-widest text-[#E60026] font-bold block">Account Details</span>
             <span className="text-xs text-zinc-500 block mt-0.5">Your account details and statistics.</span>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Hero } from './components/Hero';
 import { LaevusChat } from './components/LaevusChat';
 import { AuthModal } from './components/AuthModal';
@@ -31,18 +31,18 @@ const App: React.FC = () => {
     setSessionId(savedSession);
   }, []);
 
-  const handleRegisterClearHistory = (handler: () => void) => {
+  const handleRegisterClearHistory = useCallback((handler: () => void) => {
     clearHistoryFnRef.current = handler;
-  };
+  }, []);
 
-  const handleRegisterReleaseSpirit = (handler: () => void) => {
+  const handleRegisterReleaseSpirit = useCallback((handler: () => void) => {
     releaseSpiritFnRef.current = handler;
-  };
+  }, []);
 
-  const openAuthModal = (registerMode: boolean) => {
+  const openAuthModal = useCallback((registerMode: boolean) => {
     setAuthModalRegisterMode(registerMode);
     setIsAuthModalOpen(true);
-  };
+  }, []);
 
   return (
     <div className="h-screen bg-transparent text-[#F8F7F4] selection:bg-[#E60026]/20 selection:text-[#E60026] overflow-hidden relative flex flex-col pb-2">
