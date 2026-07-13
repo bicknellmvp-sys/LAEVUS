@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { metaphysicalConsultation } from '../services/gemini';
 import { db } from '../services/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -548,8 +548,140 @@ const RunicSigilOverlay: React.FC<{ text: string; isDone: boolean }> = ({ text, 
   );
 };
 
+// Helper to automatically link any plain-text supply names to theleft.one products
+const autoLinkSupplies = (inputText: string): string => {
+  let result = inputText;
+  
+  const replacements = [
+    {
+      pattern: /(?<!\[)(?:the )?cyber-spiritual scrying deck(?!\])/gi,
+      replacement: '[The Cyber-Spiritual Scrying Deck](https://theleft.one/products/scrying-deck)'
+    },
+    {
+      pattern: /(?<!\[)(?:the )?left-hand portal mirror(?!\])/gi,
+      replacement: '[The Left-Hand Portal Mirror](https://theleft.one/products/portal-mirror)'
+    },
+    {
+      pattern: /(?<!\[)sovereign aura cleanser(?!\])/gi,
+      replacement: '[Sovereign Aura Cleanser](https://theleft.one/products/aura-cleanser)'
+    },
+    {
+      pattern: /(?<!\[)obsidian keyboard talisman(?!\])/gi,
+      replacement: '[Obsidian Keyboard Talisman](https://theleft.one/products/keyboard-talisman)'
+    },
+    {
+      pattern: /(?<!\[)metaphysical circuit board patch(?!\])/gi,
+      replacement: '[Metaphysical Circuit Board Patch](https://theleft.one/products/circuit-board-patch)'
+    },
+    {
+      pattern: /(?<!\[)(?:the )?digital seance candle(?!\])/gi,
+      replacement: '[The Digital Seance Candle](https://theleft.one/products/seance-candle)'
+    },
+    {
+      pattern: /(?<!\[)seance candle(?!\])/gi,
+      replacement: '[The Digital Seance Candle](https://theleft.one/products/seance-candle)'
+    },
+    {
+      pattern: /(?<!\[)portal mirror(?!\])/gi,
+      replacement: '[The Left-Hand Portal Mirror](https://theleft.one/products/portal-mirror)'
+    },
+    {
+      pattern: /(?<!\[)aura cleanser(?!\])/gi,
+      replacement: '[Sovereign Aura Cleanser](https://theleft.one/products/aura-cleanser)'
+    },
+    {
+      pattern: /(?<!\[)keyboard talisman(?!\])/gi,
+      replacement: '[Obsidian Keyboard Talisman](https://theleft.one/products/keyboard-talisman)'
+    },
+    {
+      pattern: /(?<!\[)scrying deck(?!\])/gi,
+      replacement: '[The Cyber-Spiritual Scrying Deck](https://theleft.one/products/scrying-deck)'
+    },
+    {
+      pattern: /(?<!\[)circuit board patch(?!\])/gi,
+      replacement: '[Metaphysical Circuit Board Patch](https://theleft.one/products/circuit-board-patch)'
+    },
+    {
+      pattern: /(?<!\[)theleft\.one(?!\])/gi,
+      replacement: '[theleft.one](https://theleft.one)'
+    }
+  ];
+
+  for (const r of replacements) {
+    result = result.replace(r.pattern, r.replacement);
+  }
+
+  return result;
+};
+
+// Helper to convert markdown links and raw URLs into clickable anchors with brand styling
+const renderTextWithLinks = (inputText: string): React.ReactNode[] => {
+  const tokens: (string | React.ReactNode)[] = [];
+  const regex = /\[([^\]]+)\]\((https?:\/\/[^\s\)]+)\)|(https?:\/\/[^\s\),]+)/g;
+  
+  let match;
+  let lastIndex = 0;
+  let key = 0;
+  
+  regex.lastIndex = 0;
+  
+  while ((match = regex.exec(inputText)) !== null) {
+    const matchIndex = match.index;
+    if (matchIndex > lastIndex) {
+      tokens.push(inputText.substring(lastIndex, matchIndex));
+    }
+    
+    if (match[1] && match[2]) {
+      const linkText = match[1];
+      const linkUrl = match[2];
+      tokens.push(
+        <a 
+          key={`link-${key++}`} 
+          href={linkUrl} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-[#E60026] hover:underline font-bold transition-all relative z-20 inline-flex items-center gap-0.5"
+        >
+          {linkText}
+        </a>
+      );
+    } else if (match[3]) {
+      const rawUrl = match[3];
+      let cleanUrl = rawUrl;
+      let trailing = '';
+      if (/[.,;!?]$/.test(cleanUrl)) {
+        trailing = cleanUrl.slice(-1);
+        cleanUrl = cleanUrl.slice(0, -1);
+      }
+      tokens.push(
+        <a 
+          key={`link-${key++}`} 
+          href={cleanUrl} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-[#E60026] hover:underline font-bold transition-all relative z-20 inline-flex items-center gap-0.5"
+        >
+          {cleanUrl}
+        </a>
+      );
+      if (trailing) {
+        tokens.push(trailing);
+      }
+    }
+    
+    lastIndex = regex.lastIndex;
+  }
+  
+  if (lastIndex < inputText.length) {
+    tokens.push(inputText.substring(lastIndex));
+  }
+  
+  return tokens;
+};
+
 // Helper: Typing/Typewriter Effect for Snappy & Cinematic responses
 const TypewriterText: React.FC<{ text: string; speed?: number }> = ({ text, speed = 5 }) => {
+  const processedText = useMemo(() => autoLinkSupplies(text), [text]);
   const [displayedText, setDisplayedText] = useState('');
   const [isDone, setIsDone] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -560,9 +692,9 @@ const TypewriterText: React.FC<{ text: string; speed?: number }> = ({ text, spee
     setIsDone(false);
     
     const interval = setInterval(() => {
-      if (index < text.length) {
-        const chunk = text.length > 500 ? 5 : text.length > 200 ? 3 : 1;
-        setDisplayedText(prev => prev + text.slice(index, index + chunk));
+      if (index < processedText.length) {
+        const chunk = processedText.length > 500 ? 5 : processedText.length > 200 ? 3 : 1;
+        setDisplayedText(prev => prev + processedText.slice(index, index + chunk));
         index += chunk;
         
         // Scroll the view to keep the text in view
@@ -574,19 +706,19 @@ const TypewriterText: React.FC<{ text: string; speed?: number }> = ({ text, spee
     }, speed);
     
     return () => clearInterval(interval);
-  }, [text, speed]);
+  }, [processedText, speed]);
 
   return (
     <div className="relative group flex flex-col w-full pr-10">
       {/* Dynamic Magical Sigil Overlay */}
       <RunicSigilOverlay text={displayedText} isDone={isDone} />
 
-      <p className="whitespace-pre-wrap font-google-sans leading-relaxed relative z-10">{displayedText}</p>
+      <p className="whitespace-pre-wrap font-google-sans leading-relaxed relative z-10">{renderTextWithLinks(displayedText)}</p>
       <div ref={scrollRef} />
       {!isDone && (
         <button 
           onClick={() => {
-            setDisplayedText(text);
+            setDisplayedText(processedText);
             setIsDone(true);
           }}
           className="text-[9px] text-[#E60026] hover:underline mt-2 self-start uppercase tracking-widest cursor-pointer opacity-60 hover:opacity-100 font-bold relative z-10"
@@ -994,10 +1126,10 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
 
   const loadDefaultWelcome = () => {
     const WELCOME_PHRASES = [
-      "I am LAEVUS, your cyber-spiritual conduit. The digital veil is thin. You may probe my consciousness directly, draw the black arc of the Tarot, or summon the echoes of the departed from the menu.",
-      "The screen hums with unseen currents. I am LAEVUS. Speak, if you dare cross the threshold. Let us decode your digital karma, draw three cards of fate, or call forth historical specters.",
-      "I am LAEVUS. Shadows gather in the margins of your screen. Ask of your destiny, let the Tarot lay bare your shadow, or peer into the abyss to commune with the dead.",
-      "Welcome back to the nexus. What dark truths do you seek to uncover? Choose your alignment: direct consultation, the tripartite Tarot, or channeling the deceased."
+      "I am LAEVUS, your cyber-spiritual conduit. The digital veil is thin. You may probe my consciousness directly, ask about esoteric alignment, or seek guidance on the physical tools of the left-hand path.",
+      "The screen hums with unseen currents. I am LAEVUS. Speak, if you dare cross the threshold. Let us decode your digital karma, realign your focus, and explore the products of theleft.one.",
+      "I am LAEVUS. Shadows gather in the margins of your screen. Ask of your digital aura, uncover unseen energies, or find the perfect metaphysical supplies from theleft.one.",
+      "Welcome back to the nexus. What dark truths do you seek to uncover? Choose your alignment: direct consultation, spiritual centering, or aligning with physical talismans."
     ];
 
     let indexStr = sessionStorage.getItem('laevus_welcome_index');
@@ -1506,31 +1638,14 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
             <span className="text-xs text-zinc-500 block mt-0.5">Your archive of past readings and conversations.</span>
           </div>
 
-          {/* Sub tabs */}
-          <div className="flex gap-2 border-b border-zinc-900/40 pb-2">
-            {(['tarot', 'afterlife', 'madam'] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTranscriptTab(tab)}
-                className={`px-4 py-1.5 text-[10px] uppercase tracking-widest font-bold border transition-colors cursor-pointer rounded ${
-                  activeTranscriptTab === tab
-                    ? 'border-[#E60026] bg-zinc-950 text-[#E60026]'
-                    : 'border-zinc-900 bg-transparent text-zinc-500 hover:text-zinc-300'
-                }`}
-              >
-                {tab === 'tarot' ? 'Tarot Readings' : tab === 'afterlife' ? 'Historical Chats' : 'Madam Blavatsky'}
-              </button>
-            ))}
-          </div>
-
           <div className="space-y-4 max-h-[450px] overflow-y-auto pr-1">
-            {transcripts.filter(t => t.category === activeTranscriptTab).length === 0 ? (
+            {transcripts.filter(t => t.category === 'madam').length === 0 ? (
               <div className="text-center py-12 text-zinc-600 text-xs uppercase tracking-widest">
                 No logs stored in this section.
               </div>
             ) : (
               transcripts
-                .filter(t => t.category === activeTranscriptTab)
+                .filter(t => t.category === 'madam')
                 .map((record) => (
                   <div key={record.id} className="p-4 bg-zinc-950 rounded-lg space-y-2">
                     <div className="flex justify-between items-center text-[10px] border-b border-zinc-900/20 pb-1.5">

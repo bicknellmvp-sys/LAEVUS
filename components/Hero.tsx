@@ -24,8 +24,6 @@ export const Hero: React.FC<HeroProps> = ({
   const getActiveViewLabel = () => {
     switch (activeView) {
       case 'chat': return 'Madam Blavatsky';
-      case 'tarot': return 'Get a free reading!';
-      case 'afterlife': return 'The afterlife';
       case 'transcripts': return 'Transcripts';
       case 'inner-work': return 'The inner work';
       case 'account': return 'Account';
@@ -73,28 +71,6 @@ export const Hero: React.FC<HeroProps> = ({
                         </div>
                       </button>
                     )}
-
-                    {/* 2. Get a free reading! */}
-                    <button
-                      onClick={() => handleSelect('tarot')}
-                      className={`w-full text-left px-2.5 py-2 hover:bg-zinc-950 rounded text-xs flex items-center gap-2.5 transition-colors uppercase font-google-sans ${
-                        activeView === 'tarot' ? 'bg-zinc-950 text-[#E60026]' : 'text-zinc-400 hover:text-zinc-200'
-                      }`}
-                    >
-                      <Sparkles className="w-3.5 h-3.5 text-zinc-400" />
-                      <span className="font-bold text-[10px] tracking-wider font-google-sans">Get a free reading!</span>
-                    </button>
-
-                    {/* 3. The afterlife */}
-                    <button
-                      onClick={() => handleSelect('afterlife')}
-                      className={`w-full text-left px-2.5 py-2 hover:bg-zinc-950 rounded text-xs flex items-center gap-2.5 transition-colors uppercase font-google-sans ${
-                        activeView === 'afterlife' ? 'bg-zinc-950 text-[#E60026]' : 'text-zinc-400 hover:text-zinc-200'
-                      }`}
-                    >
-                      <Skull className="w-3.5 h-3.5 text-zinc-400" />
-                      <span className="font-bold text-[10px] tracking-wider font-google-sans">The afterlife</span>
-                    </button>
 
                     {/* 5. Transcripts */}
                     <button
