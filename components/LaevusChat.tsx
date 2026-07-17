@@ -680,45 +680,122 @@ const renderTextWithLinks = (inputText: string): React.ReactNode[] => {
 };
 
 // Helper: Typing/Typewriter Effect for Snappy & Cinematic responses
-const TypewriterText: React.FC<{ text: string; speed?: number }> = ({ text, speed = 5 }) => {
+interface TextToken {
+  type: 'text' | 'link';
+  text: string;
+  url?: string;
+}
+
+const parseTokens = (text: string): TextToken[] => {
+  const tokens: TextToken[] = [];
+  const regex = /\[([^\]]+)\]\((https?:\/\/[^\s\)]+)\)|(https?:\/\/[^\s\),]+)/g;
+  let match;
+  let lastIndex = 0;
+  
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      tokens.push({ type: 'text', text: text.substring(lastIndex, match.index) });
+    }
+    if (match[1] && match[2]) {
+      tokens.push({ type: 'link', text: match[1], url: match[2] });
+    } else if (match[3]) {
+      let rawUrl = match[3];
+      let trailing = '';
+      if (/[.,;!?]$/.test(rawUrl)) {
+        trailing = rawUrl.slice(-1);
+        rawUrl = rawUrl.slice(0, -1);
+      }
+      tokens.push({ type: 'link', text: rawUrl, url: rawUrl });
+      if (trailing) {
+        tokens.push({ type: 'text', text: trailing });
+      }
+    }
+    lastIndex = regex.lastIndex;
+  }
+  if (lastIndex < text.length) {
+    tokens.push({ type: 'text', text: text.substring(lastIndex) });
+  }
+  return tokens;
+};
+
+const TypewriterText: React.FC<{ text: string; speed?: number }> = ({ text, speed = 1 }) => {
   const processedText = useMemo(() => autoLinkSupplies(text), [text]);
-  const [displayedText, setDisplayedText] = useState('');
+  const tokens = useMemo(() => parseTokens(processedText), [processedText]);
+  const totalVisibleLength = useMemo(() => tokens.reduce((sum, t) => sum + t.text.length, 0), [tokens]);
+  
+  const [visibleChars, setVisibleChars] = useState(0);
   const [isDone, setIsDone] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    let index = 0;
-    setDisplayedText('');
+    setVisibleChars(0);
     setIsDone(false);
     
     const interval = setInterval(() => {
-      if (index < processedText.length) {
-        const chunk = processedText.length > 500 ? 5 : processedText.length > 200 ? 3 : 1;
-        setDisplayedText(prev => prev + processedText.slice(index, index + chunk));
-        index += chunk;
-        
-        // Scroll the view to keep the text in view
-        scrollRef.current?.scrollIntoView({ behavior: 'auto' });
-      } else {
-        clearInterval(interval);
-        setIsDone(true);
-      }
+      setVisibleChars(prev => {
+        if (prev < totalVisibleLength) {
+          const remaining = totalVisibleLength - prev;
+          const chunk = totalVisibleLength > 500 ? 15 : totalVisibleLength > 200 ? 8 : 3;
+          const next = Math.min(prev + chunk, totalVisibleLength);
+          if (next >= totalVisibleLength) {
+            clearInterval(interval);
+            setIsDone(true);
+          }
+          return next;
+        } else {
+          clearInterval(interval);
+          setIsDone(true);
+          return prev;
+        }
+      });
+      scrollRef.current?.scrollIntoView({ behavior: 'auto' });
     }, speed);
     
     return () => clearInterval(interval);
-  }, [processedText, speed]);
+  }, [totalVisibleLength, speed]);
+
+  const renderedElements = useMemo(() => {
+    let charsLeft = visibleChars;
+    const elements: React.ReactNode[] = [];
+    let key = 0;
+    
+    for (const token of tokens) {
+      if (charsLeft <= 0) break;
+      
+      const takeChars = Math.min(token.text.length, charsLeft);
+      const slicedText = token.text.slice(0, takeChars);
+      charsLeft -= takeChars;
+      
+      if (token.type === 'link') {
+        elements.push(
+          <a 
+            key={`typewriter-link-${key++}`} 
+            href={token.url} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-[#E60026] hover:underline font-bold transition-all relative z-20 inline-flex items-center gap-0.5"
+          >
+            {slicedText}
+          </a>
+        );
+      } else {
+        elements.push(<span key={`typewriter-text-${key++}`}>{slicedText}</span>);
+      }
+    }
+    return elements;
+  }, [tokens, visibleChars]);
 
   return (
     <div className="relative group flex flex-col w-full pr-10">
       {/* Dynamic Magical Sigil Overlay */}
-      <RunicSigilOverlay text={displayedText} isDone={isDone} />
+      <RunicSigilOverlay text={processedText.slice(0, visibleChars)} isDone={isDone} />
 
-      <p className="whitespace-pre-wrap font-google-sans leading-relaxed relative z-10">{renderTextWithLinks(displayedText)}</p>
+      <p className="whitespace-pre-wrap font-google-sans leading-relaxed relative z-10">{renderedElements}</p>
       <div ref={scrollRef} />
       {!isDone && (
         <button 
           onClick={() => {
-            setDisplayedText(processedText);
+            setVisibleChars(totalVisibleLength);
             setIsDone(true);
           }}
           className="text-[9px] text-[#E60026] hover:underline mt-2 self-start uppercase tracking-widest cursor-pointer opacity-60 hover:opacity-100 font-bold relative z-10"
@@ -1155,7 +1232,7 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
   };
 
   const computeSentiment = (text: string): number => {
-    const positiveWords = ['love', 'light', 'peace', 'happy', 'healing', 'harmony', 'growth', 'joy', 'blessed', 'wisdom', 'angels', 'serene', 'elevate', 'spirit', 'revelation', 'guide', 'future', 'tupac', 'elvis', 'blavatsky'];
+    const positiveWords = ['love', 'light', 'peace', 'happy', 'healing', 'harmony', 'growth', 'joy', 'blessed', 'wisdom', 'angels', 'serene', 'elevate', 'spirit', 'revelation', 'guide', 'future', 'tupac', 'elvis', 'dupont'];
     const negativeWords = ['sad', 'dark', 'pain', 'anger', 'hate', 'death', 'fear', 'broken', 'lost', 'shadow', 'trapped', 'bound', 'chaos', 'tower', 'devil', 'hell', 'suffering'];
     
     let score = 50;
@@ -1452,7 +1529,7 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
                    className={`flex flex-col max-w-[85%] ${isUser ? 'ml-auto items-end' : 'mr-auto items-start'}`}
                  >
                    <span className="text-[8px] text-zinc-500 mb-1 px-1 tracking-wider uppercase font-google-sans">
-                     {isUser ? 'YOU' : m.spiritName ? m.spiritName.toUpperCase() : 'LAEVUS'} • {m.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                     {isUser ? 'YOU' : m.spiritName ? m.spiritName.toUpperCase() : 'MADAM DUPONT'} • {m.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                    </span>
                    <div className={`px-4 py-3 rounded-xl leading-relaxed text-xs ${
                      isUser 

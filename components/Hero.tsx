@@ -23,11 +23,13 @@ export const Hero: React.FC<HeroProps> = ({
 
   const getActiveViewLabel = () => {
     switch (activeView) {
-      case 'chat': return 'Madam Blavatsky';
+      case 'chat': return 'LAEVUS';
+      case 'tarot': return 'Tarot Draw';
+      case 'afterlife': return 'Speak to the Dead';
       case 'transcripts': return 'Transcripts';
-      case 'inner-work': return 'The inner work';
+      case 'inner-work': return 'The Inner Work';
       case 'account': return 'Account';
-      default: return 'Madam Blavatsky';
+      default: return 'LAEVUS';
     }
   };
 
@@ -35,7 +37,12 @@ export const Hero: React.FC<HeroProps> = ({
     <div className="text-center relative z-40 max-w-6xl mx-auto px-4 pt-3 pb-2 flex flex-col items-center">
       <div className="relative inline-block">
         <h1 className="font-syne text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-[-0.06em] text-[#F8F7F4] uppercase leading-[0.85] selection:bg-[#E60026] selection:text-[#111113] relative select-none">
-          LAEVUS
+          <button 
+            onClick={() => setActiveView('chat')} 
+            className="hover:text-[#E60026] hover:drop-shadow-[0_0_15px_rgba(230,0,38,0.6)] transition-all uppercase font-syne text-center tracking-[-0.06em] leading-none font-extrabold focus:outline-none cursor-pointer bg-transparent border-none p-0 outline-none"
+          >
+            LAEVUS
+          </button>
           
           {/* THELEFT.ONE trigger dropped almost on top of the "US", specifically underneath on the right side */}
           <div className="absolute right-0 bottom-[-18px] sm:bottom-[-22px] md:bottom-[-26px] translate-y-[20%] z-50 flex flex-col items-end">
@@ -72,7 +79,29 @@ export const Hero: React.FC<HeroProps> = ({
                       </button>
                     )}
 
-                    {/* 5. Transcripts */}
+                    {/* 2. Tarot Card Draw */}
+                    <button
+                      onClick={() => handleSelect('tarot')}
+                      className={`w-full text-left px-2.5 py-2 hover:bg-zinc-950 rounded text-xs flex items-center gap-2.5 transition-colors uppercase font-google-sans ${
+                        activeView === 'tarot' ? 'bg-zinc-950 text-[#E60026]' : 'text-zinc-400 hover:text-zinc-200'
+                      }`}
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-zinc-400" />
+                      <span className="font-bold text-[10px] tracking-wider font-google-sans">Tarot Card Draw</span>
+                    </button>
+
+                    {/* 3. Speak to the Dead */}
+                    <button
+                      onClick={() => handleSelect('afterlife')}
+                      className={`w-full text-left px-2.5 py-2 hover:bg-zinc-950 rounded text-xs flex items-center gap-2.5 transition-colors uppercase font-google-sans ${
+                        activeView === 'afterlife' ? 'bg-zinc-950 text-[#E60026]' : 'text-zinc-400 hover:text-zinc-200'
+                      }`}
+                    >
+                      <Skull className="w-3.5 h-3.5 text-zinc-400" />
+                      <span className="font-bold text-[10px] tracking-wider font-google-sans">Speak to the Dead</span>
+                    </button>
+
+                    {/* 4. Transcripts */}
                     <button
                       onClick={() => handleSelect('transcripts')}
                       className={`w-full text-left px-2.5 py-2 hover:bg-zinc-950 rounded text-xs flex items-center gap-2.5 transition-colors uppercase font-google-sans ${
@@ -83,7 +112,18 @@ export const Hero: React.FC<HeroProps> = ({
                       <span className="font-bold text-[10px] tracking-wider font-google-sans">Transcripts</span>
                     </button>
 
-                    {/* 7. Account */}
+                    {/* 5. The Inner Work */}
+                    <button
+                      onClick={() => handleSelect('inner-work')}
+                      className={`w-full text-left px-2.5 py-2 hover:bg-zinc-950 rounded text-xs flex items-center gap-2.5 transition-colors uppercase font-google-sans ${
+                        activeView === 'inner-work' ? 'bg-zinc-950 text-[#E60026]' : 'text-zinc-400 hover:text-zinc-200'
+                      }`}
+                    >
+                      <Activity className="w-3.5 h-3.5 text-zinc-400" />
+                      <span className="font-bold text-[10px] tracking-wider font-google-sans">The Inner Work</span>
+                    </button>
+
+                    {/* 6. Account */}
                     <button
                       onClick={() => handleSelect('account')}
                       className={`w-full text-left px-2.5 py-2 hover:bg-zinc-950 rounded text-xs flex items-center gap-2.5 transition-colors uppercase font-google-sans ${
