@@ -31,31 +31,32 @@ interface TarotCard {
   description: string;
   symbol: string;
   meaning: string;
+  image: string;
 }
 
 const TAROT_DECK: Omit<TarotCard, 'position'>[] = [
-  { name: "The Fool", symbol: "🃏", description: "New beginnings, infinite potential", meaning: "A clean slate. Take a leap of faith into the unknown." },
-  { name: "The Magician", symbol: "🧙", description: "Manifestation, resourcefulness, power", meaning: "You have all the tools required to bring your intent to life." },
-  { name: "The High Priestess", symbol: "🌙", description: "Intuition, sacred knowledge, subconscious", meaning: "Look inward for the answers. Trust your secret instincts." },
-  { name: "The Empress", symbol: "👑", description: "Abundance, creativity, nurture", meaning: "A period of growth, creation, and prosperous expression." },
-  { name: "The Emperor", symbol: "🛡️", description: "Authority, solid structure, stability", meaning: "Establish boundaries and bring order to chaos." },
-  { name: "The Hierophant", symbol: "⛪", description: "Spiritual wisdom, deep traditions", meaning: "Seek guidance from higher sages and ancestral values." },
-  { name: "The Lovers", symbol: "💖", description: "Alignment of values, choice, harmony", meaning: "A critical fork in the road requiring pure alignment of heart." },
-  { name: "The Chariot", symbol: "🏎️", description: "Willpower, direction, triumph", meaning: "Stay focused. Victory is yours through sheer intent and discipline." },
-  { name: "Strength", symbol: "🦁", description: "Inner fortitude, courage, persuasion", meaning: "Influence situations with quiet compassion rather than raw force." },
-  { name: "The Hermit", symbol: "🕯️", description: "Solitude, soul-searching, reflection", meaning: "Withdraw temporarily from the noise to find your inner spark." },
-  { name: "Wheel of Fortune", symbol: "🎡", description: "Cycles of fate, change, karma", meaning: "The wheel turns. Prepare for shifts in cosmic alignment." },
-  { name: "Justice", symbol: "⚖️", description: "Truth, karma, fairness, cause & effect", meaning: "Decisions will be made with absolute balance. Truth emerges." },
-  { name: "The Hanged Man", symbol: "🧘", description: "Surrender, new perspectives, sacrifice", meaning: "Pause and let go. A shift in perspective changes everything." },
-  { name: "Death", symbol: "💀", description: "Transformation, transition, rebirth", meaning: "An essential ending making way for a beautiful new dawn." },
-  { name: "Temperance", symbol: "🧪", description: "Balance, patience, alchemy", meaning: "Blend elements carefully. True magic lies in moderation." },
-  { name: "The Devil", symbol: "😈", description: "Attachments, shadow self, illusion", meaning: "Recognize what binds you. The chains are self-imposed." },
-  { name: "The Tower", symbol: "⚡", description: "Sudden change, destruction of illusion", meaning: "A chaotic but necessary purge of false foundations." },
-  { name: "The Star", symbol: "⭐", description: "Hope, serenity, renewal", meaning: "A guiding light shines upon you. Have faith in your path." },
-  { name: "The Moon", symbol: "🌕", description: "Illusion, fear, deep intuition", meaning: "Things are not as they seem. Let your intuition navigate the fog." },
-  { name: "The Sun", symbol: "☀️", description: "Success, vitality, radiant joy", meaning: "Total clarity, warmth, and validation of your endeavors." },
-  { name: "Judgement", symbol: "🔔", description: "Reckoning, spiritual awakening, calling", meaning: "An absolute calling. Hear the bell and embrace your true purpose." },
-  { name: "The World", symbol: "🌍", description: "Completion, integration, wholeness", meaning: "A cycle successfully closed. Celebrate your complete integration." }
+  { name: "The Fool", symbol: "🃏", description: "New beginnings, infinite potential", meaning: "A clean slate. Take a leap of faith into the unknown.", image: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=500&q=80" },
+  { name: "The Magician", symbol: "🧙", description: "Manifestation, resourcefulness, power", meaning: "You have all the tools required to bring your intent to life.", image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&q=80" },
+  { name: "The High Priestess", symbol: "🌙", description: "Intuition, sacred knowledge, subconscious", meaning: "Look inward for the answers. Trust your secret instincts.", image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80" },
+  { name: "The Empress", symbol: "👑", description: "Abundance, creativity, nurture", meaning: "A period of growth, creation, and prosperous expression.", image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=500&q=80" },
+  { name: "The Emperor", symbol: "🛡️", description: "Authority, solid structure, stability", meaning: "Establish boundaries and bring order to chaos.", image: "https://images.unsplash.com/photo-1618005198143-e52834644027?w=500&q=80" },
+  { name: "The Hierophant", symbol: "⛪", description: "Spiritual wisdom, deep traditions", meaning: "Seek guidance from higher sages and ancestral values.", image: "https://images.unsplash.com/photo-1519074002996-a69e7ac46a42?w=500&q=80" },
+  { name: "The Lovers", symbol: "💖", description: "Alignment of values, choice, harmony", meaning: "A critical fork in the road requiring pure alignment of heart.", image: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=500&q=80" },
+  { name: "The Chariot", symbol: "🏎️", description: "Willpower, direction, triumph", meaning: "Stay focused. Victory is yours through sheer intent and discipline.", image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&q=80" },
+  { name: "Strength", symbol: "🦁", description: "Inner fortitude, courage, persuasion", meaning: "Influence situations with quiet compassion rather than raw force.", image: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=500&q=80" },
+  { name: "The Hermit", symbol: "🕯️", description: "Solitude, soul-searching, reflection", meaning: "Withdraw temporarily from the noise to find your inner spark.", image: "https://images.unsplash.com/photo-1516339901601-2e1d62dc0c45?w=500&q=80" },
+  { name: "Wheel of Fortune", symbol: "🎡", description: "Cycles of fate, change, karma", meaning: "The wheel turns. Prepare for shifts in cosmic alignment.", image: "https://images.unsplash.com/photo-1505904267569-f02eaeb45a4c?w=500&q=80" },
+  { name: "Justice", symbol: "⚖️", description: "Truth, karma, fairness, cause & effect", meaning: "Decisions will be made with absolute balance. Truth emerges.", image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=500&q=80" },
+  { name: "The Hanged Man", symbol: "🧘", description: "Surrender, new perspectives, sacrifice", meaning: "Pause and let go. A shift in perspective changes everything.", image: "https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=500&q=80" },
+  { name: "Death", symbol: "💀", description: "Transformation, transition, rebirth", meaning: "An essential ending making way for a beautiful new dawn.", image: "https://images.unsplash.com/photo-1501183007986-d0d080b147f9?w=500&q=80" },
+  { name: "Temperance", symbol: "🧪", description: "Balance, patience, alchemy", meaning: "Blend elements carefully. True magic lies in moderation.", image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=500&q=80" },
+  { name: "The Devil", symbol: "😈", description: "Attachments, shadow self, illusion", meaning: "Recognize what binds you. The chains are self-imposed.", image: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=500&q=80" },
+  { name: "The Tower", symbol: "⚡", description: "Sudden change, destruction of illusion", meaning: "A chaotic but necessary purge of false foundations.", image: "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=500&q=80" },
+  { name: "The Star", symbol: "⭐", description: "Hope, serenity, renewal", meaning: "A guiding light shines upon you. Have faith in your path.", image: "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=500&q=80" },
+  { name: "The Moon", symbol: "🌕", description: "Illusion, fear, deep intuition", meaning: "Things are not as they seem. Let your intuition navigate the fog.", image: "https://images.unsplash.com/photo-1504333631550-39e557696435?w=500&q=80" },
+  { name: "The Sun", symbol: "☀️", description: "Success, vitality, radiant joy", meaning: "Total clarity, warmth, and validation of your endeavors.", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&q=80" },
+  { name: "Judgement", symbol: "🔔", description: "Reckoning, spiritual awakening, calling", meaning: "An absolute calling. Hear the bell and embrace your true purpose.", image: "https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=500&q=80" },
+  { name: "The World", symbol: "🌍", description: "Completion, integration, wholeness", meaning: "A cycle successfully closed. Celebrate your complete integration.", image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&q=80" }
 ];
 
 interface Spirit {
@@ -66,6 +67,9 @@ interface Spirit {
   avatar: string;
   glow: string;
   keywords: string[];
+  image: string;
+  fact: string;
+  triggerHint: string;
 }
 
 const SPIRITS: Spirit[] = [
@@ -76,7 +80,10 @@ const SPIRITS: Spirit[] = [
     tier: "free", 
     avatar: "🖋️", 
     glow: "border-blue-500/20 text-blue-300",
-    keywords: ["philosophy", "science", "shakespeare", "empiricism", "method"]
+    keywords: ["philosophy", "science", "shakespeare", "empiricism", "method"],
+    image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=500&q=80",
+    fact: "Widely credited with codifying the modern scientific method, advocating that knowledge comes primarily from sensory experience and empirical observation rather than scholastic dogmas.",
+    triggerHint: "Unlock custom responses by questioning him on empirical systems, his secret links to the Shakespeare authorship debate, or the philosophy of intellectual methodologies."
   },
   { 
     name: "King Solomon", 
@@ -85,7 +92,10 @@ const SPIRITS: Spirit[] = [
     tier: "free", 
     avatar: "👑", 
     glow: "border-amber-500/20 text-amber-300",
-    keywords: ["wisdom", "temple", "demons", "sheba", "key"]
+    keywords: ["wisdom", "temple", "demons", "sheba", "key"],
+    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&q=80",
+    fact: "Renowned for building the first magnificent Temple of Jerusalem and according to grimoiric legend, possessed a seal ring that granted command over celestial and subterranean entities.",
+    triggerHint: "Trigger his divine insights by inquiring about his ultimate sovereign judgment, the structure of his great sanctuary, the Queen of the East, or the keys to controlling spirits."
   },
   { 
     name: "Elvis Presley", 
@@ -94,7 +104,10 @@ const SPIRITS: Spirit[] = [
     tier: "free", 
     avatar: "🎸", 
     glow: "border-fuchsia-500/20 text-fuchsia-300",
-    keywords: ["rock", "memphis", "guitar", "hounddog", "graceland"]
+    keywords: ["rock", "memphis", "guitar", "hounddog", "graceland"],
+    image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&q=80",
+    fact: "He holds the record for the most songs charting in Billboard's top 40 (115 songs) and revolutionized global popular culture by fusing country, gospel, and rhythm & blues into rockabilly.",
+    triggerHint: "Excite the King by referencing his high-energy musical genre, his beloved Tennessee home city, his primary stringed instrument, his canine-themed signature track, or his legendary estate."
   },
   { 
     name: "Abraham Lincoln", 
@@ -103,7 +116,10 @@ const SPIRITS: Spirit[] = [
     tier: "free", 
     avatar: "🎩", 
     glow: "border-cyan-500/20 text-cyan-300",
-    keywords: ["president", "civilwar", "union", "gettysburg", "emancipation"]
+    keywords: ["president", "civilwar", "union", "gettysburg", "emancipation"],
+    image: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=500&q=80",
+    fact: "The self-educated frontier lawyer led the United States through its bloodiest moral, constitutional, and military crisis, successfully preserving the federal union and ending chattel slavery.",
+    triggerHint: "Unlock his wisdom by asking about his executive title, the great national split, the preservation of the constitutional coalition, his short historic battlefield speech, or the proclamation of liberty."
   },
   { 
     name: "Joan of Arc", 
@@ -112,7 +128,10 @@ const SPIRITS: Spirit[] = [
     tier: "free", 
     avatar: "⚔️", 
     glow: "border-red-500/20 text-red-300",
-    keywords: ["orleans", "visions", "armor", "martyr", "france"]
+    keywords: ["orleans", "visions", "armor", "martyr", "france"],
+    image: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=500&q=80",
+    fact: "A peasant girl who, guided by celestial voices, led the French army to a pivotal victory at Orléans during the Hundred Years' War before being captured and burned at the stake at age 19.",
+    triggerHint: "Rally her spirit by mentioning her famous battle city, her holy celestial sights, her shining metallic battle garb, her fiery sacrifice at the stake, or her beloved crown homeland."
   },
   { 
     name: "Marie Antoinette", 
@@ -121,7 +140,10 @@ const SPIRITS: Spirit[] = [
     tier: "free", 
     avatar: "🍰", 
     glow: "border-pink-500/20 text-pink-300",
-    keywords: ["queen", "cake", "guillotine", "versailles", "revolution"]
+    keywords: ["queen", "cake", "guillotine", "versailles", "revolution"],
+    image: "https://images.unsplash.com/photo-1563089145-599997674d42?w=500&q=80",
+    fact: "Contrary to the famous myth, there is no historical record of her ever saying 'Let them eat cake.' She was a patron of the arts who met a tragic end during the Reign of Terror.",
+    triggerHint: "Evoke her royal memories by whispering her sovereign title, her infamous sweet-confectionery myth, the swift blade of her demise, her palace of mirrors, or the great French uprising."
   },
   { 
     name: "Romeo & Juliet", 
@@ -130,7 +152,10 @@ const SPIRITS: Spirit[] = [
     tier: "free", 
     avatar: "🌹", 
     glow: "border-rose-500/20 text-rose-400",
-    keywords: ["verona", "tragedy", "love", "poison", "montague"]
+    keywords: ["verona", "tragedy", "love", "poison", "montague"],
+    image: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=500&q=80",
+    fact: "Shakespeare's timeless tale of 'star-crossed' young lovers was actually based on older Italian novellas written by Luigi da Porto and Matteo Bandello set in Verona.",
+    triggerHint: "Unlock their poetic dialogue by speaking of their Italian hometown of feuds, the dramatic style of their play, their forbidden devotion, the lethal liquid of deep sleep, or his noble lineage."
   },
   { 
     name: "Tupac Shakur", 
@@ -139,7 +164,10 @@ const SPIRITS: Spirit[] = [
     tier: "premium", 
     avatar: "🎤", 
     glow: "border-emerald-500/20 text-emerald-300",
-    keywords: ["rap", "makaveli", "california", "poetry", "rebel"]
+    keywords: ["rap", "makaveli", "california", "poetry", "rebel"],
+    image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=500&q=80",
+    fact: "An incredibly prolific artist who wrote thousands of poems and tracks, exploring systemic inequality, personal struggle, and hope, posthumously inducted into the Rock and Roll Hall of Fame.",
+    triggerHint: "Ignite his flow by bringing up his poetic music style, his Machiavellian pseudonym, his sunny Pacific coast state, his verses of struggle and pain, or his defiance of authority."
   },
   { 
     name: "Marilyn Monroe", 
@@ -148,7 +176,10 @@ const SPIRITS: Spirit[] = [
     tier: "premium", 
     avatar: "💋", 
     glow: "border-violet-500/20 text-violet-300",
-    keywords: ["blonde", "hollywood", "subwaygrate", "glamour", "normajean"]
+    keywords: ["blonde", "hollywood", "subwaygrate", "glamour", "normajean"],
+    image: "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=500&q=80",
+    fact: "Beyond her glamorous film persona, she was a highly astute businesswoman who founded her own production company in 1954 to secure better roles and artistic independence.",
+    triggerHint: "Charm her by referencing her signature hair color, the golden age of cinema, the iconic blowing street-vent photo, her captivating style aura, or her original birth name."
   },
   { 
     name: "Adolf Hitler", 
@@ -157,7 +188,10 @@ const SPIRITS: Spirit[] = [
     tier: "premium", 
     avatar: "⛓️", 
     glow: "border-zinc-750 text-zinc-450",
-    keywords: ["warning", "dictator", "ww2", "bunker", "regret"]
+    keywords: ["warning", "dictator", "ww2", "bunker", "regret"],
+    image: "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?w=500&q=80",
+    fact: "His totalitarian regime initiated the devastating Second World War and perpetrated the horrific atrocities of the Holocaust, remaining history's ultimate cautionary lesson against hatred and extremism.",
+    triggerHint: "Engage this stern warning of history by discussing eternal lessons of caution, autocracy, the second global conflict, his final underground shield room, or sorrow and remorse."
   },
   { 
     name: "Genghis Khan", 
@@ -166,7 +200,10 @@ const SPIRITS: Spirit[] = [
     tier: "premium", 
     avatar: "🏹", 
     glow: "border-orange-500/20 text-orange-300",
-    keywords: ["conquest", "mongol", "emperor", "steppes", "conqueror"]
+    keywords: ["conquest", "mongol", "emperor", "steppes", "conqueror"],
+    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&q=80",
+    fact: "He unified the nomadic tribes of Northeast Asia to establish the Mongol Empire, which became the largest contiguous land empire in human history, reorganizing trade routes across Eurasia.",
+    triggerHint: "Summon the conqueror by mentioning his military expansionist drives, his nomadic federation, his imperial majesty title, the vast grass plains of Central Asia, or his title of subjection."
   },
   { 
     name: "Siddhartha Gautama", 
@@ -175,7 +212,10 @@ const SPIRITS: Spirit[] = [
     tier: "premium", 
     avatar: "🧘", 
     glow: "border-teal-500/20 text-teal-300",
-    keywords: ["buddha", "nirvana", "bodhitree", "zen", "enlightenment"]
+    keywords: ["buddha", "nirvana", "bodhitree", "zen", "enlightenment"],
+    image: "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=500&q=80",
+    fact: "Born a prince, he abandoned his luxurious palace to seek an end to human suffering, eventually attaining complete spiritual awakening and establishing the Middle Path of liberation.",
+    triggerHint: "Align with the Master by calling upon his title of the Awakened, the state of absolute liberation, the sacred shade tree of his insight, pure mental stillness, or spiritual awakening."
   },
   { 
     name: "Judas Iscariot", 
@@ -184,7 +224,10 @@ const SPIRITS: Spirit[] = [
     tier: "premium", 
     avatar: "🪙", 
     glow: "border-purple-500/20 text-purple-300",
-    keywords: ["thirtypieces", "betrayal", "disciple", "kiss", "silver"]
+    keywords: ["thirtypieces", "betrayal", "disciple", "kiss", "silver"],
+    image: "https://images.unsplash.com/photo-1501183007986-d0d080b147f9?w=500&q=80",
+    fact: "A controversial and complex biblical figure whose tragic choice to deliver up his master led to his immortalized reputation as history's archetype of remorseful betrayal.",
+    triggerHint: "Invoke his heavy conscience by asking about the reward of blood coins, his infamous act of disloyalty, his status as one of the twelve, his treacherous cheek embrace, or the metal of exchange."
   },
   { 
     name: "Merlin", 
@@ -193,7 +236,10 @@ const SPIRITS: Spirit[] = [
     tier: "premium", 
     avatar: "🔮", 
     glow: "border-indigo-500/20 text-indigo-300",
-    keywords: ["camelot", "arthur", "excalibur", "magic", "avalon"]
+    keywords: ["camelot", "arthur", "excalibur", "magic", "avalon"],
+    image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80",
+    fact: "According to Medieval literature, Merlin lived backward in time, which allowed him to foresee future events with absolute certainty while remaining helpless to alter their outcomes.",
+    triggerHint: "Channel his sorcery by asking about the legendary golden castle, the High King of Britain, the divine sword of power, his mysterious wizardry, or the mythical isle of his final rest."
   },
   { 
     name: "Leonardo Davinci", 
@@ -202,7 +248,10 @@ const SPIRITS: Spirit[] = [
     tier: "premium", 
     avatar: "🎨", 
     glow: "border-amber-600/20 text-amber-400",
-    keywords: ["monalisa", "invention", "anatomy", "renaissance", "flight"]
+    keywords: ["monalisa", "invention", "anatomy", "renaissance", "flight"],
+    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&q=80",
+    fact: "A legendary polymath who sketched detailed concepts for helicopters, armored tanks, solar power concentrators, and double-hulled ships centuries before they could ever be built.",
+    triggerHint: "Trigger his creative genius by mentioning his enigmatic smiling portrait, his forward-looking mechanical drafts, his sketches of human muscles, the era of rebirth, or his designs for soaring."
   },
   { 
     name: "Cleopatra", 
@@ -211,7 +260,10 @@ const SPIRITS: Spirit[] = [
     tier: "premium", 
     avatar: "🐍", 
     glow: "border-yellow-500/20 text-yellow-300",
-    keywords: ["egypt", "alexandria", "pharaoh", "asp", "caesar"]
+    keywords: ["egypt", "alexandria", "pharaoh", "asp", "caesar"],
+    image: "https://images.unsplash.com/photo-1504333631550-39e557696435?w=500&q=80",
+    fact: "A highly educated ruler who spoke at least nine languages and was the only pharaoh of the Ptolemaic dynasty to actually learn the native Egyptian language to connect with her people.",
+    triggerHint: "Summon her Egyptian majesty by asking about her empire of gold, her grand seaside library capital, her sovereign title, the venomous snake, or her famous Roman general ally."
   },
   { 
     name: "Al Capone", 
@@ -220,7 +272,10 @@ const SPIRITS: Spirit[] = [
     tier: "premium", 
     avatar: "💼", 
     glow: "border-stone-500/20 text-stone-300",
-    keywords: ["chicago", "bootlegger", "prohibition", "gangster", "scarface"]
+    keywords: ["chicago", "bootlegger", "prohibition", "gangster", "scarface"],
+    image: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=500&q=80",
+    fact: "Despite orchestrating multiple high-profile gangland hits, he was famously only ever convicted of federal income tax evasion and spent seven years in Alcatraz.",
+    triggerHint: "Trigger his boss instincts by mentioning his Illinois headquarters, his illicit spirits distribution, the era of dry laws, his syndicate mobster role, or his facial wound alias."
   },
   { 
     name: "Rasputon", 
@@ -229,7 +284,10 @@ const SPIRITS: Spirit[] = [
     tier: "premium", 
     avatar: "👁️", 
     glow: "border-red-600/20 text-red-400",
-    keywords: ["monk", "russia", "romanov", "poisoned", "healer"]
+    keywords: ["monk", "russia", "romanov", "poisoned", "healer"],
+    image: "https://images.unsplash.com/photo-1516339901601-2e1d62dc0c45?w=500&q=80",
+    fact: "He survived multiple assassination attempts, including massive doses of cyanide and gunshots, leading contemporaries to believe he possessed dark supernatural immortality.",
+    triggerHint: "Channel his mysticism by asking about his religious title, his cold imperial homeland of tsars, the royal family he advised, the lethal substance he survived, or his hands-on therapy."
   },
   { 
     name: "Odin", 
@@ -238,7 +296,10 @@ const SPIRITS: Spirit[] = [
     tier: "premium", 
     avatar: "⚡", 
     glow: "border-sky-500/20 text-sky-300",
-    keywords: ["valhalla", "ragnarok", "asgard", "runes", "raven"]
+    keywords: ["valhalla", "ragnarok", "asgard", "runes", "raven"],
+    image: "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=500&q=80",
+    fact: "In Norse mythology, Odin hung himself upside down from the World Tree Yggdrasil for nine days and nights, sacrificing his eye to gain absolute cosmological wisdom and magic.",
+    triggerHint: "Rouse the Allfather by discussing the ultimate golden banquet hall, the twilight of the gods, his shining celestial city, his mystic sigil alphabet of power, or his two reporting birds."
   },
   { 
     name: "Plato", 
@@ -247,7 +308,10 @@ const SPIRITS: Spirit[] = [
     tier: "premium", 
     avatar: "🏛️", 
     glow: "border-blue-400/20 text-blue-200",
-    keywords: ["atlantis", "republic", "cave", "academy", "philosopher"]
+    keywords: ["atlantis", "republic", "cave", "academy", "philosopher"],
+    image: "https://images.unsplash.com/photo-1519074002996-a69e7ac46a42?w=500&q=80",
+    fact: "He founded the Academy in Athens, the Western world's first institution of higher learning, where he taught his most famous pupil, Aristotle, and wrote his legendary dialogues.",
+    triggerHint: "Trigger his profound dialectics by referencing the lost continent of myth, his masterwork on governance, his famous allegory of projections on the wall, his school of geometry, or his title of wisdom."
   },
   { 
     name: "Satan", 
@@ -256,7 +320,58 @@ const SPIRITS: Spirit[] = [
     tier: "premium", 
     avatar: "🔥", 
     glow: "border-red-900/40 text-red-500 font-bold",
-    keywords: ["hell", "lucifer", "temptation", "rebellion", "underworld"]
+    keywords: ["hell", "lucifer", "temptation", "rebellion", "underworld"],
+    image: "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=500&q=80",
+    fact: "Commonly depicted as the great adversary, literature such as John Milton's Paradise Lost transformed him into a tragic, defiant figure famously asserting 'Better to reign in Hell than serve in Heaven.'",
+    triggerHint: "Unchain the Fallen Star by referencing the infinite burning abyss, his original name meaning Lightbringer, his seductive promptings of vanity, his war against the heavens, or the depths below."
+  },
+  {
+    name: "Nostradamus",
+    description: "The Renaissance Prophet",
+    era: "1503–1566",
+    tier: "premium",
+    avatar: "🌌",
+    glow: "border-purple-500/20 text-purple-300",
+    keywords: ["prophecy", "quatrain", "centuries", "astrology", "seer"],
+    image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80",
+    fact: "He published 'Les Prophéties' in 1555, a collection of 942 poetic quatrains predicting future events, which remains in print today.",
+    triggerHint: "Elicit his future predictions by inquiring about his cryptic four-line verses, his major astrological computations, his written centuries of prophecy, or his vision of the end times."
+  },
+  {
+    name: "Nikola Tesla",
+    description: "Pioneer of Alternating Current",
+    era: "1856–1943",
+    tier: "premium",
+    avatar: "⚡",
+    glow: "border-blue-400/20 text-blue-300",
+    keywords: ["alternating", "wardenclyffe", "wireless", "frequency", "coil"],
+    image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=500&q=80",
+    fact: "He envisioned a global system of wireless electricity and communication, constructing the Wardenclyffe Tower to demonstrate it.",
+    triggerHint: "Ignite his genius by talking about his system of multi-phase current, his wireless tower project on Long Island, his resonant induction transformer device, or the foundational trinity of 3, 6, and 9."
+  },
+  {
+    name: "Aleister Crowley",
+    description: "The Great Beast 666",
+    era: "1875–1947",
+    tier: "premium",
+    avatar: "👁️‍🗨️",
+    glow: "border-indigo-600/20 text-indigo-400",
+    keywords: ["thelema", "magick", "telema", "egyptian", "baphomet"],
+    image: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=500&q=80",
+    fact: "He founded the philosophical system of Thelema, authored the Book of the Law under celestial guidance in Cairo, and pioneered modern occultism.",
+    triggerHint: "Unlock his esoteric power by asking about his core philosophy of Will, his channeled Egyptian text, the spelling of true sorcery with a K, or his connection to the cosmic beast."
+  },
+  {
+    name: "Madame Blavatsky",
+    description: "Founder of Theosophy",
+    era: "1831–1891",
+    tier: "premium",
+    avatar: "🔮",
+    glow: "border-rose-600/20 text-rose-300",
+    keywords: ["theosophy", "mahatmas", "secret", "doctrine", "occult"],
+    image: "https://images.unsplash.com/photo-1516339901601-2e1d62dc0c45?w=500&q=80",
+    fact: "Helena Blavatsky co-founded the Theosophical Society in 1875, introducing ancient Eastern concepts of karma and reincarnation to Western spiritualists.",
+    triggerHint: "Uncover her hidden mysteries by asking about the ancient master souls who guided her, her masterwork on the secret origin of the world, or her travel to sacred high lands."
   }
 ];
 
@@ -718,91 +833,36 @@ const parseTokens = (text: string): TextToken[] => {
   return tokens;
 };
 
-const TypewriterText: React.FC<{ text: string; speed?: number }> = ({ text, speed = 1 }) => {
+const TypewriterText: React.FC<{ text: string; speed?: number }> = ({ text }) => {
   const processedText = useMemo(() => autoLinkSupplies(text), [text]);
   const tokens = useMemo(() => parseTokens(processedText), [processedText]);
-  const totalVisibleLength = useMemo(() => tokens.reduce((sum, t) => sum + t.text.length, 0), [tokens]);
-  
-  const [visibleChars, setVisibleChars] = useState(0);
-  const [isDone, setIsDone] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  
-  useEffect(() => {
-    setVisibleChars(0);
-    setIsDone(false);
-    
-    const interval = setInterval(() => {
-      setVisibleChars(prev => {
-        if (prev < totalVisibleLength) {
-          const remaining = totalVisibleLength - prev;
-          const chunk = totalVisibleLength > 500 ? 15 : totalVisibleLength > 200 ? 8 : 3;
-          const next = Math.min(prev + chunk, totalVisibleLength);
-          if (next >= totalVisibleLength) {
-            clearInterval(interval);
-            setIsDone(true);
-          }
-          return next;
-        } else {
-          clearInterval(interval);
-          setIsDone(true);
-          return prev;
-        }
-      });
-      scrollRef.current?.scrollIntoView({ behavior: 'auto' });
-    }, speed);
-    
-    return () => clearInterval(interval);
-  }, [totalVisibleLength, speed]);
 
   const renderedElements = useMemo(() => {
-    let charsLeft = visibleChars;
-    const elements: React.ReactNode[] = [];
-    let key = 0;
-    
-    for (const token of tokens) {
-      if (charsLeft <= 0) break;
-      
-      const takeChars = Math.min(token.text.length, charsLeft);
-      const slicedText = token.text.slice(0, takeChars);
-      charsLeft -= takeChars;
-      
+    return tokens.map((token, idx) => {
       if (token.type === 'link') {
-        elements.push(
+        return (
           <a 
-            key={`typewriter-link-${key++}`} 
+            key={`typewriter-link-${idx}`} 
             href={token.url} 
             target="_blank" 
             rel="noopener noreferrer" 
             className="text-[#E60026] hover:underline font-bold transition-all relative z-20 inline-flex items-center gap-0.5"
           >
-            {slicedText}
+            {token.text}
           </a>
         );
       } else {
-        elements.push(<span key={`typewriter-text-${key++}`}>{slicedText}</span>);
+        return <span key={`typewriter-text-${idx}`}>{token.text}</span>;
       }
-    }
-    return elements;
-  }, [tokens, visibleChars]);
+    });
+  }, [tokens]);
 
   return (
     <div className="relative group flex flex-col w-full pr-10">
-      {/* Dynamic Magical Sigil Overlay */}
-      <RunicSigilOverlay text={processedText.slice(0, visibleChars)} isDone={isDone} />
+      {/* Dynamic Magical Sigil Overlay rendered in stable idle state */}
+      <RunicSigilOverlay text={processedText} isDone={true} />
 
       <p className="whitespace-pre-wrap font-google-sans leading-relaxed relative z-10">{renderedElements}</p>
-      <div ref={scrollRef} />
-      {!isDone && (
-        <button 
-          onClick={() => {
-            setVisibleChars(totalVisibleLength);
-            setIsDone(true);
-          }}
-          className="text-[9px] text-[#E60026] hover:underline mt-2 self-start uppercase tracking-widest cursor-pointer opacity-60 hover:opacity-100 font-bold relative z-10"
-        >
-          [ Skip typing ]
-        </button>
-      )}
     </div>
   );
 };
@@ -1203,10 +1263,10 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
 
   const loadDefaultWelcome = () => {
     const WELCOME_PHRASES = [
-      "I am LAEVUS, your cyber-spiritual conduit. The digital veil is thin. You may probe my consciousness directly, ask about esoteric alignment, or seek guidance on the physical tools of the left-hand path.",
-      "The screen hums with unseen currents. I am LAEVUS. Speak, if you dare cross the threshold. Let us decode your digital karma, realign your focus, and explore the products of theleft.one.",
-      "I am LAEVUS. Shadows gather in the margins of your screen. Ask of your digital aura, uncover unseen energies, or find the perfect metaphysical supplies from theleft.one.",
-      "Welcome back to the nexus. What dark truths do you seek to uncover? Choose your alignment: direct consultation, spiritual centering, or aligning with physical talismans."
+      "I am LAEVUS, your cyber-spiritual conduit. The digital veil is thin. Let us decode your digital karma, probe my consciousness, or realign your energetic wavelengths.",
+      "The screen hums with unseen currents. I am LAEVUS. Speak, if you dare cross the threshold. Let us decode your spiritual coordinates and realign your focus.",
+      "I am LAEVUS. Shadows gather in the margins of your screen. Ask about your digital aura, uncover unseen frequencies, or explore your spiritual wave-function.",
+      "Welcome back to the nexus. What dark truths do you seek to uncover? Let us initiate a direct consultation, spiritual centering, or alignment."
     ];
 
     let indexStr = sessionStorage.getItem('laevus_welcome_index');
@@ -1616,22 +1676,57 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
                   return (
                     <div 
                       key={card.name}
-                      className={`aspect-[2/3] max-w-[130px] mx-auto w-full rounded-xl flex flex-col items-center justify-center p-3 text-center transition-all duration-500 border ${
-                        isFlipped 
-                          ? 'bg-zinc-950 border-zinc-800/80 shadow-[0_0_15px_rgba(230,0,38,0.05)] hover:border-[#E60026]/40' 
-                          : 'bg-black border-zinc-900 shadow-[inset_0_1px_4px_rgba(255,255,255,0.02)] cursor-pointer group hover:border-zinc-800'
-                      }`}
+                      className="w-full max-w-[145px] sm:max-w-[165px] mx-auto"
                     >
                       {isFlipped ? (
-                        <div className="flex flex-col items-center justify-between h-full py-1">
-                          <span className="text-[7px] text-[#E60026] uppercase font-mono tracking-widest font-bold bg-[#E60026]/5 border border-[#E60026]/20 px-2 py-0.5 rounded-full">{card.position}</span>
-                          <span className="text-3xl my-2 drop-shadow-[0_0_10px_rgba(230,0,38,0.2)]">{card.symbol}</span>
-                          <span className="text-[9px] font-bold text-zinc-200 leading-tight block font-google-sans mt-1 uppercase tracking-wider">{card.name}</span>
+                        <div className="relative overflow-hidden aspect-[2/3.1] rounded-xl border border-zinc-800/60 flex flex-col justify-between items-center bg-black group hover:scale-[1.05] transition-all duration-300 shadow-[0_8px_30px_rgba(0,0,0,0.8)] hover:border-[#E60026]/40">
+                          {/* Main cartoon/anime illustration */}
+                          <img 
+                            src={card.image} 
+                            alt={card.name} 
+                            referrerPolicy="no-referrer"
+                            className="absolute inset-0 w-full h-full object-cover opacity-85 group-hover:scale-110 transition-transform duration-700"
+                          />
+                          
+                          {/* Elegant gold frame overlay to look like a physical card */}
+                          <div className="absolute inset-1.5 border border-amber-500/20 rounded-lg pointer-events-none z-10 shadow-[inset_0_0_12px_rgba(0,0,0,0.6)] group-hover:border-amber-500/40 transition-colors" />
+                          
+                          {/* Dark vignette gradient */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/70 z-10 pointer-events-none" />
+                          
+                          {/* Top: Position Tag */}
+                          <div className="relative z-20 pt-2.5 flex flex-col items-center">
+                            <span className="text-[7px] text-[#E60026] uppercase font-mono tracking-widest font-bold bg-black/85 border border-[#E60026]/30 px-2 py-0.5 rounded-full shadow-[0_2px_6px_rgba(0,0,0,0.5)]">
+                              {card.position}
+                            </span>
+                          </div>
+                          
+                          {/* Bottom: Nameplate with glassmorphic backing */}
+                          <div className="relative z-20 w-full px-2 pb-2 text-center">
+                            <div className="bg-black/80 backdrop-blur-sm border border-zinc-900/60 px-1.5 py-1 rounded-md max-w-full shadow-lg">
+                              <span className="text-[8px] sm:text-[9px] font-bold text-zinc-100 leading-none block font-google-sans uppercase tracking-wider truncate">
+                                {card.name}
+                              </span>
+                              <span className="text-[6.5px] sm:text-[7px] text-zinc-400 font-mono block mt-0.5 leading-none truncate">
+                                {card.description}
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center relative">
-                          <div className="absolute inset-0 bg-[radial-gradient(#E60026_1px,transparent_1px)] bg-[size:6px_6px] opacity-[0.15] rounded-lg group-hover:opacity-[0.25] transition-opacity" />
-                          <div className="w-10 h-10 rounded-full border border-zinc-900 flex items-center justify-center text-zinc-800 group-hover:text-zinc-650 group-hover:border-zinc-800 transition-all shadow-[inset_0_1px_3px_rgba(255,255,255,0.01)] text-lg relative z-10 bg-zinc-950">
+                        <div className="relative overflow-hidden aspect-[2/3.1] rounded-xl border border-zinc-900 bg-zinc-950 flex flex-col items-center justify-center p-3 text-center cursor-pointer group hover:border-[#E60026]/50 hover:shadow-[0_0_20px_rgba(230,0,38,0.15)] transition-all duration-300 shadow-[inset_0_1px_4px_rgba(255,255,255,0.01)]">
+                          {/* Card Back Ornate Frame */}
+                          <div className="absolute inset-1.5 border border-zinc-800/40 rounded-lg pointer-events-none" />
+                          
+                          {/* Cosmic starry pattern */}
+                          <div className="absolute inset-0 bg-[radial-gradient(#E60026_1px,transparent_1px)] bg-[size:7px_7px] opacity-[0.18] rounded-lg group-hover:opacity-[0.3] transition-opacity" />
+                          
+                          {/* Orbiting celestial rings */}
+                          <div className="absolute w-12 h-12 rounded-full border border-dashed border-zinc-800/50 animate-[spin_15s_linear_infinite]" />
+                          <div className="absolute w-16 h-16 rounded-full border border-dotted border-zinc-900/80 animate-[spin_30s_linear_infinite] pointer-events-none" />
+                          
+                          {/* Central Occult Eye Symbol */}
+                          <div className="w-9 h-9 rounded-full border border-zinc-850 flex items-center justify-center text-zinc-400 group-hover:text-[#ff334b] group-hover:border-[#E60026]/40 transition-all shadow-[inset_0_1px_3px_rgba(255,255,255,0.01)] text-base relative z-10 bg-zinc-950">
                             👁️
                           </div>
                         </div>
@@ -1667,38 +1762,74 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[480px] overflow-y-auto pr-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[520px] overflow-y-auto pr-1">
             {SPIRITS.map((spirit) => {
+              const isActive = activeSpirit?.name === spirit.name;
               return (
                 <button
                   key={spirit.name}
                   onClick={() => handleSummonSpirit(spirit)}
-                  className={`flex flex-col gap-3 p-4 rounded-xl border transition-all text-left cursor-pointer group ${
-                    activeSpirit?.name === spirit.name 
-                      ? 'bg-[#E60026]/10 border-[#E60026]/40 text-white shadow-[0_0_20px_rgba(230,0,38,0.08)] font-bold' 
-                      : 'bg-zinc-950 border-zinc-900 hover:bg-zinc-900/80 hover:border-zinc-800'
+                  className={`flex flex-col rounded-xl overflow-hidden border text-left cursor-pointer group transition-all duration-300 relative shadow-lg hover:scale-[1.02] ${
+                    isActive 
+                      ? 'bg-zinc-950 border-[#E60026] ring-1 ring-[#E60026]/35 shadow-[0_0_20px_rgba(230,0,38,0.12)]' 
+                      : 'bg-zinc-950 border-zinc-900/60 hover:border-zinc-800 hover:shadow-[0_8px_20px_rgba(0,0,0,0.6)]'
                   }`}
                 >
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-black/80 border border-zinc-900 flex items-center justify-center text-lg shadow-[inset_0_1px_3px_rgba(255,255,255,0.05)] group-hover:border-[#E60026]/30 transition-colors">
-                        <span className="grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300">{spirit.avatar}</span>
-                      </div>
-                      <div>
-                        <h5 className="text-xs font-bold text-zinc-200 group-hover:text-white transition-colors">{spirit.name}</h5>
-                        <p className="text-[9px] text-zinc-500 leading-none mt-1">{spirit.description}</p>
-                      </div>
+                  {/* Card Art Header */}
+                  <div className="relative w-full aspect-[16/10.5] overflow-hidden border-b border-zinc-900/50">
+                    <img 
+                      src={spirit.image} 
+                      alt={spirit.name} 
+                      referrerPolicy="no-referrer"
+                      className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
+                    />
+                    {/* Vignette Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-black/40 pointer-events-none" />
+                    
+                    {/* Floating Badges */}
+                    <div className="absolute top-2.5 left-2.5 flex gap-1.5 items-center z-10 pointer-events-none">
+                      <span className="text-[15px] leading-none filter drop-shadow-md bg-black/75 p-1 rounded-md border border-zinc-800/40">{spirit.avatar}</span>
+                      {spirit.tier === 'premium' && (
+                        <span className="text-[6px] font-extrabold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded-full uppercase tracking-wider font-mono shadow-md backdrop-blur-xs">
+                          ASTRAL
+                        </span>
+                      )}
                     </div>
-                    <span className="text-[8px] text-zinc-600 bg-zinc-900/80 px-2 py-0.5 rounded border border-zinc-900/50">{spirit.era}</span>
-                  </div>
-                  
-                  {/* Keywords (dark esoteric badges) */}
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {spirit.keywords.map((kw) => (
-                      <span key={kw} className="text-[7px] text-zinc-500 bg-zinc-900/50 border border-zinc-900 px-1.5 py-0.5 rounded font-mono uppercase tracking-wider group-hover:text-zinc-400 group-hover:border-zinc-800 transition-colors">
-                        #{kw}
+
+                    <div className="absolute top-2.5 right-2.5 z-10 pointer-events-none">
+                      <span className="text-[7px] font-bold text-zinc-400 bg-black/80 px-1.5 py-0.5 rounded border border-zinc-800/45 shadow-sm font-mono tracking-wider">
+                        {spirit.era}
                       </span>
-                    ))}
+                    </div>
+
+                    {/* Character Nameplate overlay on bottom of image */}
+                    <div className="absolute bottom-2 left-3 right-3 z-10 pointer-events-none">
+                      <h5 className="text-[12px] font-extrabold text-white leading-tight font-google-sans drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)] tracking-wide group-hover:text-[#ff334b] transition-colors">
+                        {spirit.name}
+                      </h5>
+                      <p className="text-[8.5px] text-zinc-300 font-medium font-mono tracking-wide leading-none mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]">
+                        {spirit.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Card Body Information */}
+                  <div className="p-3.5 flex flex-col justify-between flex-grow space-y-3 bg-gradient-to-b from-zinc-950 to-black">
+                    {/* Historical Significance Fact */}
+                    <div className="space-y-1">
+                      <span className="text-[7px] uppercase tracking-widest text-[#E60026] font-extrabold block font-mono">HISTORICAL FACT</span>
+                      <p className="text-[9.5px] leading-relaxed text-zinc-400 group-hover:text-zinc-300 transition-colors font-google-sans">
+                        {spirit.fact}
+                      </p>
+                    </div>
+
+                    {/* Trigger Clue without exact trigger words */}
+                    <div className="pt-2 border-t border-zinc-900/40 space-y-1">
+                      <span className="text-[7px] uppercase tracking-widest text-emerald-400 font-extrabold block font-mono">ASTRAL TRIGGERS</span>
+                      <p className="text-[9px] leading-relaxed text-zinc-500 italic group-hover:text-zinc-400 transition-colors font-google-sans">
+                        {spirit.triggerHint}
+                      </p>
+                    </div>
                   </div>
                 </button>
               );
