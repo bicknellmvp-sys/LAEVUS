@@ -35,28 +35,28 @@ interface TarotCard {
 }
 
 const TAROT_DECK: Omit<TarotCard, 'position'>[] = [
-  { name: "The Fool", symbol: "🃏", description: "New beginnings, infinite potential", meaning: "A clean slate. Take a leap of faith into the unknown.", image: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=500&q=80" },
-  { name: "The Magician", symbol: "🧙", description: "Manifestation, resourcefulness, power", meaning: "You have all the tools required to bring your intent to life.", image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&q=80" },
-  { name: "The High Priestess", symbol: "🌙", description: "Intuition, sacred knowledge, subconscious", meaning: "Look inward for the answers. Trust your secret instincts.", image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80" },
-  { name: "The Empress", symbol: "👑", description: "Abundance, creativity, nurture", meaning: "A period of growth, creation, and prosperous expression.", image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=500&q=80" },
-  { name: "The Emperor", symbol: "🛡️", description: "Authority, solid structure, stability", meaning: "Establish boundaries and bring order to chaos.", image: "https://images.unsplash.com/photo-1618005198143-e52834644027?w=500&q=80" },
-  { name: "The Hierophant", symbol: "⛪", description: "Spiritual wisdom, deep traditions", meaning: "Seek guidance from higher sages and ancestral values.", image: "https://images.unsplash.com/photo-1519074002996-a69e7ac46a42?w=500&q=80" },
-  { name: "The Lovers", symbol: "💖", description: "Alignment of values, choice, harmony", meaning: "A critical fork in the road requiring pure alignment of heart.", image: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=500&q=80" },
-  { name: "The Chariot", symbol: "🏎️", description: "Willpower, direction, triumph", meaning: "Stay focused. Victory is yours through sheer intent and discipline.", image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&q=80" },
-  { name: "Strength", symbol: "🦁", description: "Inner fortitude, courage, persuasion", meaning: "Influence situations with quiet compassion rather than raw force.", image: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=500&q=80" },
-  { name: "The Hermit", symbol: "🕯️", description: "Solitude, soul-searching, reflection", meaning: "Withdraw temporarily from the noise to find your inner spark.", image: "https://images.unsplash.com/photo-1516339901601-2e1d62dc0c45?w=500&q=80" },
-  { name: "Wheel of Fortune", symbol: "🎡", description: "Cycles of fate, change, karma", meaning: "The wheel turns. Prepare for shifts in cosmic alignment.", image: "https://images.unsplash.com/photo-1505904267569-f02eaeb45a4c?w=500&q=80" },
-  { name: "Justice", symbol: "⚖️", description: "Truth, karma, fairness, cause & effect", meaning: "Decisions will be made with absolute balance. Truth emerges.", image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=500&q=80" },
-  { name: "The Hanged Man", symbol: "🧘", description: "Surrender, new perspectives, sacrifice", meaning: "Pause and let go. A shift in perspective changes everything.", image: "https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=500&q=80" },
-  { name: "Death", symbol: "💀", description: "Transformation, transition, rebirth", meaning: "An essential ending making way for a beautiful new dawn.", image: "https://images.unsplash.com/photo-1501183007986-d0d080b147f9?w=500&q=80" },
-  { name: "Temperance", symbol: "🧪", description: "Balance, patience, alchemy", meaning: "Blend elements carefully. True magic lies in moderation.", image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=500&q=80" },
-  { name: "The Devil", symbol: "😈", description: "Attachments, shadow self, illusion", meaning: "Recognize what binds you. The chains are self-imposed.", image: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=500&q=80" },
-  { name: "The Tower", symbol: "⚡", description: "Sudden change, destruction of illusion", meaning: "A chaotic but necessary purge of false foundations.", image: "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=500&q=80" },
-  { name: "The Star", symbol: "⭐", description: "Hope, serenity, renewal", meaning: "A guiding light shines upon you. Have faith in your path.", image: "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=500&q=80" },
-  { name: "The Moon", symbol: "🌕", description: "Illusion, fear, deep intuition", meaning: "Things are not as they seem. Let your intuition navigate the fog.", image: "https://images.unsplash.com/photo-1504333631550-39e557696435?w=500&q=80" },
-  { name: "The Sun", symbol: "☀️", description: "Success, vitality, radiant joy", meaning: "Total clarity, warmth, and validation of your endeavors.", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&q=80" },
-  { name: "Judgement", symbol: "🔔", description: "Reckoning, spiritual awakening, calling", meaning: "An absolute calling. Hear the bell and embrace your true purpose.", image: "https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=500&q=80" },
-  { name: "The World", symbol: "🌍", description: "Completion, integration, wholeness", meaning: "A cycle successfully closed. Celebrate your complete integration.", image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&q=80" }
+  { name: "The Fool", symbol: "🃏", description: "New beginnings, infinite potential", meaning: "A clean slate. Take a leap of faith into the unknown.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m00.jpg" },
+  { name: "The Magician", symbol: "🧙", description: "Manifestation, resourcefulness, power", meaning: "You have all the tools required to bring your intent to life.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m01.jpg" },
+  { name: "The High Priestess", symbol: "🌙", description: "Intuition, sacred knowledge, subconscious", meaning: "Look inward for the answers. Trust your secret instincts.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m02.jpg" },
+  { name: "The Empress", symbol: "👑", description: "Abundance, creativity, nurture", meaning: "A period of growth, creation, and prosperous expression.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m03.jpg" },
+  { name: "The Emperor", symbol: "🛡️", description: "Authority, solid structure, stability", meaning: "Establish boundaries and bring order to chaos.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m04.jpg" },
+  { name: "The Hierophant", symbol: "⛪", description: "Spiritual wisdom, deep traditions", meaning: "Seek guidance from higher sages and ancestral values.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m05.jpg" },
+  { name: "The Lovers", symbol: "💖", description: "Alignment of values, choice, harmony", meaning: "A critical fork in the road requiring pure alignment of heart.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m06.jpg" },
+  { name: "The Chariot", symbol: "🏎️", description: "Willpower, direction, triumph", meaning: "Stay focused. Victory is yours through sheer intent and discipline.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m07.jpg" },
+  { name: "Strength", symbol: "🦁", description: "Inner fortitude, courage, persuasion", meaning: "Influence situations with quiet compassion rather than raw force.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m08.jpg" },
+  { name: "The Hermit", symbol: "🕯️", description: "Solitude, soul-searching, reflection", meaning: "Withdraw temporarily from the noise to find your inner spark.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m09.jpg" },
+  { name: "Wheel of Fortune", symbol: "🎡", description: "Cycles of fate, change, karma", meaning: "The wheel turns. Prepare for shifts in cosmic alignment.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m10.jpg" },
+  { name: "Justice", symbol: "⚖️", description: "Truth, karma, fairness, cause & effect", meaning: "Decisions will be made with absolute balance. Truth emerges.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m11.jpg" },
+  { name: "The Hanged Man", symbol: "🧘", description: "Surrender, new perspectives, sacrifice", meaning: "Pause and let go. A shift in perspective changes everything.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m12.jpg" },
+  { name: "Death", symbol: "💀", description: "Transformation, transition, rebirth", meaning: "An essential ending making way for a beautiful new dawn.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m13.jpg" },
+  { name: "Temperance", symbol: "🧪", description: "Balance, patience, alchemy", meaning: "Blend elements carefully. True magic lies in moderation.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m14.jpg" },
+  { name: "The Devil", symbol: "😈", description: "Attachments, shadow self, illusion", meaning: "Recognize what binds you. The chains are self-imposed.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m15.jpg" },
+  { name: "The Tower", symbol: "⚡", description: "Sudden change, destruction of illusion", meaning: "A chaotic but necessary purge of false foundations.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m16.jpg" },
+  { name: "The Star", symbol: "⭐", description: "Hope, serenity, renewal", meaning: "A guiding light shines upon you. Have faith in your path.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m17.jpg" },
+  { name: "The Moon", symbol: "🌕", description: "Illusion, fear, deep intuition", meaning: "Things are not as they seem. Let your intuition navigate the fog.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m18.jpg" },
+  { name: "The Sun", symbol: "☀️", description: "Success, vitality, radiant joy", meaning: "Total clarity, warmth, and validation of your endeavors.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m19.jpg" },
+  { name: "Judgement", symbol: "🔔", description: "Reckoning, spiritual awakening, calling", meaning: "An absolute calling. Hear the bell and embrace your true purpose.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m20.jpg" },
+  { name: "The World", symbol: "🌍", description: "Completion, integration, wholeness", meaning: "A cycle successfully closed. Celebrate your complete integration.", image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m21.jpg" }
 ];
 
 interface Spirit {
@@ -70,6 +70,11 @@ interface Spirit {
   image: string;
   fact: string;
   triggerHint: string;
+  tarotCard?: {
+    name: string;
+    num: string;
+    meaning: string;
+  };
 }
 
 const SPIRITS: Spirit[] = [
@@ -81,9 +86,14 @@ const SPIRITS: Spirit[] = [
     avatar: "🖋️", 
     glow: "border-blue-500/20 text-blue-300",
     keywords: ["philosophy", "science", "shakespeare", "empiricism", "method"],
-    image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m11.jpg",
     fact: "Widely credited with codifying the modern scientific method, advocating that knowledge comes primarily from sensory experience and empirical observation rather than scholastic dogmas.",
-    triggerHint: "Unlock custom responses by questioning him on empirical systems, his secret links to the Shakespeare authorship debate, or the philosophy of intellectual methodologies."
+    triggerHint: "Unlock custom responses by questioning him on empirical systems, his secret links to the Shakespeare authorship debate, or the philosophy of intellectual methodologies.",
+    tarotCard: {
+      name: "Justice",
+      num: "XI",
+      meaning: "Scientific truth, empirical systems, logic, and cause & effect."
+    }
   },
   { 
     name: "King Solomon", 
@@ -93,9 +103,14 @@ const SPIRITS: Spirit[] = [
     avatar: "👑", 
     glow: "border-amber-500/20 text-amber-300",
     keywords: ["wisdom", "temple", "demons", "sheba", "key"],
-    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m04.jpg",
     fact: "Renowned for building the first magnificent Temple of Jerusalem and according to grimoiric legend, possessed a seal ring that granted command over celestial and subterranean entities.",
-    triggerHint: "Trigger his divine insights by inquiring about his ultimate sovereign judgment, the structure of his great sanctuary, the Queen of the East, or the keys to controlling spirits."
+    triggerHint: "Trigger his divine insights by inquiring about his ultimate sovereign judgment, the structure of his great sanctuary, the Queen of the East, or the keys to controlling spirits.",
+    tarotCard: {
+      name: "The Emperor",
+      num: "IV",
+      meaning: "Divine authority, stability, structures of order, and absolute wisdom."
+    }
   },
   { 
     name: "Elvis Presley", 
@@ -105,9 +120,14 @@ const SPIRITS: Spirit[] = [
     avatar: "🎸", 
     glow: "border-fuchsia-500/20 text-fuchsia-300",
     keywords: ["rock", "memphis", "guitar", "hounddog", "graceland"],
-    image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m19.jpg",
     fact: "He holds the record for the most songs charting in Billboard's top 40 (115 songs) and revolutionized global popular culture by fusing country, gospel, and rhythm & blues into rockabilly.",
-    triggerHint: "Excite the King by referencing his high-energy musical genre, his beloved Tennessee home city, his primary stringed instrument, his canine-themed signature track, or his legendary estate."
+    triggerHint: "Excite the King by referencing his high-energy musical genre, his beloved Tennessee home city, his primary stringed instrument, his canine-themed signature track, or his legendary estate.",
+    tarotCard: {
+      name: "The Sun",
+      num: "XIX",
+      meaning: "Radiant joy, vitality, gold warmth, and spectacular performance."
+    }
   },
   { 
     name: "Abraham Lincoln", 
@@ -117,9 +137,14 @@ const SPIRITS: Spirit[] = [
     avatar: "🎩", 
     glow: "border-cyan-500/20 text-cyan-300",
     keywords: ["president", "civilwar", "union", "gettysburg", "emancipation"],
-    image: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m20.jpg",
     fact: "The self-educated frontier lawyer led the United States through its bloodiest moral, constitutional, and military crisis, successfully preserving the federal union and ending chattel slavery.",
-    triggerHint: "Unlock his wisdom by asking about his executive title, the great national split, the preservation of the constitutional coalition, his short historic battlefield speech, or the proclamation of liberty."
+    triggerHint: "Unlock his wisdom by asking about his executive title, the great national split, the preservation of the constitutional coalition, his short historic battlefield speech, or the proclamation of liberty.",
+    tarotCard: {
+      name: "Judgement",
+      num: "XX",
+      meaning: "A calling of moral reckoning, resurrection of union, and ultimate choice."
+    }
   },
   { 
     name: "Joan of Arc", 
@@ -129,9 +154,14 @@ const SPIRITS: Spirit[] = [
     avatar: "⚔️", 
     glow: "border-red-500/20 text-red-300",
     keywords: ["orleans", "visions", "armor", "martyr", "france"],
-    image: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m08.jpg",
     fact: "A peasant girl who, guided by celestial voices, led the French army to a pivotal victory at Orléans during the Hundred Years' War before being captured and burned at the stake at age 19.",
-    triggerHint: "Rally her spirit by mentioning her famous battle city, her holy celestial sights, her shining metallic battle garb, her fiery sacrifice at the stake, or her beloved crown homeland."
+    triggerHint: "Rally her spirit by mentioning her famous battle city, her holy celestial sights, her shining metallic battle garb, her fiery sacrifice at the stake, or her beloved crown homeland.",
+    tarotCard: {
+      name: "Strength",
+      num: "VIII",
+      meaning: "Spiritual courage, inner fortitude, and triumph over fiery trials."
+    }
   },
   { 
     name: "Marie Antoinette", 
@@ -141,9 +171,14 @@ const SPIRITS: Spirit[] = [
     avatar: "🍰", 
     glow: "border-pink-500/20 text-pink-300",
     keywords: ["queen", "cake", "guillotine", "versailles", "revolution"],
-    image: "https://images.unsplash.com/photo-1563089145-599997674d42?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m10.jpg",
     fact: "Contrary to the famous myth, there is no historical record of her ever saying 'Let them eat cake.' She was a patron of the arts who met a tragic end during the Reign of Terror.",
-    triggerHint: "Evoke her royal memories by whispering her sovereign title, her infamous sweet-confectionery myth, the swift blade of her demise, her palace of mirrors, or the great French uprising."
+    triggerHint: "Evoke her royal memories by whispering her sovereign title, her infamous sweet-confectionery myth, the swift blade of her demise, her palace of mirrors, or the great French uprising.",
+    tarotCard: {
+      name: "The Wheel of Fortune",
+      num: "X",
+      meaning: "The grand turns of cosmic fate, from supreme height to sudden fall."
+    }
   },
   { 
     name: "Romeo & Juliet", 
@@ -153,9 +188,14 @@ const SPIRITS: Spirit[] = [
     avatar: "🌹", 
     glow: "border-rose-500/20 text-rose-400",
     keywords: ["verona", "tragedy", "love", "poison", "montague"],
-    image: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m06.jpg",
     fact: "Shakespeare's timeless tale of 'star-crossed' young lovers was actually based on older Italian novellas written by Luigi da Porto and Matteo Bandello set in Verona.",
-    triggerHint: "Unlock their poetic dialogue by speaking of their Italian hometown of feuds, the dramatic style of their play, their forbidden devotion, the lethal liquid of deep sleep, or his noble lineage."
+    triggerHint: "Unlock their poetic dialogue by speaking of their Italian hometown of feuds, the dramatic style of their play, their forbidden devotion, the lethal liquid of deep sleep, or his noble lineage.",
+    tarotCard: {
+      name: "The Lovers",
+      num: "VI",
+      meaning: "Total alignment of hearts, star-crossed devotion, and critical life paths."
+    }
   },
   { 
     name: "Tupac Shakur", 
@@ -165,9 +205,14 @@ const SPIRITS: Spirit[] = [
     avatar: "🎤", 
     glow: "border-emerald-500/20 text-emerald-300",
     keywords: ["rap", "makaveli", "california", "poetry", "rebel"],
-    image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m07.jpg",
     fact: "An incredibly prolific artist who wrote thousands of poems and tracks, exploring systemic inequality, personal struggle, and hope, posthumously inducted into the Rock and Roll Hall of Fame.",
-    triggerHint: "Ignite his flow by bringing up his poetic music style, his Machiavellian pseudonym, his sunny Pacific coast state, his verses of struggle and pain, or his defiance of authority."
+    triggerHint: "Ignite his flow by bringing up his poetic music style, his Machiavellian pseudonym, his sunny Pacific coast state, his verses of struggle and pain, or his defiance of authority.",
+    tarotCard: {
+      name: "The Chariot",
+      num: "VII",
+      meaning: "Indomitable willpower, raw focus, and victory over systemic oppression."
+    }
   },
   { 
     name: "Marilyn Monroe", 
@@ -177,9 +222,14 @@ const SPIRITS: Spirit[] = [
     avatar: "💋", 
     glow: "border-violet-500/20 text-violet-300",
     keywords: ["blonde", "hollywood", "subwaygrate", "glamour", "normajean"],
-    image: "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m17.jpg",
     fact: "Beyond her glamorous film persona, she was a highly astute businesswoman who founded her own production company in 1954 to secure better roles and artistic independence.",
-    triggerHint: "Charm her by referencing her signature hair color, the golden age of cinema, the iconic blowing street-vent photo, her captivating style aura, or her original birth name."
+    triggerHint: "Charm her by referencing her signature hair color, the golden age of cinema, the iconic blowing street-vent photo, her captivating style aura, or her original birth name.",
+    tarotCard: {
+      name: "The Star",
+      num: "XVII",
+      meaning: "Seductive glamour, hope, and vulnerable illumination under the spotlight."
+    }
   },
   { 
     name: "Adolf Hitler", 
@@ -189,9 +239,14 @@ const SPIRITS: Spirit[] = [
     avatar: "⛓️", 
     glow: "border-zinc-750 text-zinc-450",
     keywords: ["warning", "dictator", "ww2", "bunker", "regret"],
-    image: "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m16.jpg",
     fact: "His totalitarian regime initiated the devastating Second World War and perpetrated the horrific atrocities of the Holocaust, remaining history's ultimate cautionary lesson against hatred and extremism.",
-    triggerHint: "Engage this stern warning of history by discussing eternal lessons of caution, autocracy, the second global conflict, his final underground shield room, or sorrow and remorse."
+    triggerHint: "Engage this stern warning of history by discussing eternal lessons of caution, autocracy, the second global conflict, his final underground shield room, or sorrow and remorse.",
+    tarotCard: {
+      name: "The Tower",
+      num: "XVI",
+      meaning: "Sudden, total ruin and collapse of false tyrannical structures."
+    }
   },
   { 
     name: "Genghis Khan", 
@@ -201,9 +256,14 @@ const SPIRITS: Spirit[] = [
     avatar: "🏹", 
     glow: "border-orange-500/20 text-orange-300",
     keywords: ["conquest", "mongol", "emperor", "steppes", "conqueror"],
-    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m13.jpg",
     fact: "He unified the nomadic tribes of Northeast Asia to establish the Mongol Empire, which became the largest contiguous land empire in human history, reorganizing trade routes across Eurasia.",
-    triggerHint: "Summon the conqueror by mentioning his military expansionist drives, his nomadic federation, his imperial majesty title, the vast grass plains of Central Asia, or his title of subjection."
+    triggerHint: "Summon the conqueror by mentioning his military expansionist drives, his nomadic federation, his imperial majesty title, the vast grass plains of Central Asia, or his title of subjection.",
+    tarotCard: {
+      name: "Death",
+      num: "XIII",
+      meaning: "Inevitable change, destruction of old boundaries, and sweeping transition."
+    }
   },
   { 
     name: "Siddhartha Gautama", 
@@ -213,9 +273,14 @@ const SPIRITS: Spirit[] = [
     avatar: "🧘", 
     glow: "border-teal-500/20 text-teal-300",
     keywords: ["buddha", "nirvana", "bodhitree", "zen", "enlightenment"],
-    image: "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m00.jpg",
     fact: "Born a prince, he abandoned his luxurious palace to seek an end to human suffering, eventually attaining complete spiritual awakening and establishing the Middle Path of liberation.",
-    triggerHint: "Align with the Master by calling upon his title of the Awakened, the state of absolute liberation, the sacred shade tree of his insight, pure mental stillness, or spiritual awakening."
+    triggerHint: "Align with the Master by calling upon his title of the Awakened, the state of absolute liberation, the sacred shade tree of his insight, pure mental stillness, or spiritual awakening.",
+    tarotCard: {
+      name: "The Fool",
+      num: "0",
+      meaning: "Renouncing royal luxury for a leap of faith into spiritual wanderlust."
+    }
   },
   { 
     name: "Judas Iscariot", 
@@ -225,9 +290,14 @@ const SPIRITS: Spirit[] = [
     avatar: "🪙", 
     glow: "border-purple-500/20 text-purple-300",
     keywords: ["thirtypieces", "betrayal", "disciple", "kiss", "silver"],
-    image: "https://images.unsplash.com/photo-1501183007986-d0d080b147f9?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m12.jpg",
     fact: "A controversial and complex biblical figure whose tragic choice to deliver up his master led to his immortalized reputation as history's archetype of remorseful betrayal.",
-    triggerHint: "Invoke his heavy conscience by asking about the reward of blood coins, his infamous act of disloyalty, his status as one of the twelve, his treacherous cheek embrace, or the metal of exchange."
+    triggerHint: "Invoke his heavy conscience by asking about the reward of blood coins, his infamous act of disloyalty, his status as one of the twelve, his treacherous cheek embrace, or the metal of exchange.",
+    tarotCard: {
+      name: "The Hanged Man",
+      num: "XII",
+      meaning: "Sacrifice, heavy remorse, suspension of action, and new perspectives."
+    }
   },
   { 
     name: "Merlin", 
@@ -237,9 +307,14 @@ const SPIRITS: Spirit[] = [
     avatar: "🔮", 
     glow: "border-indigo-500/20 text-indigo-300",
     keywords: ["camelot", "arthur", "excalibur", "magic", "avalon"],
-    image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m01.jpg",
     fact: "According to Medieval literature, Merlin lived backward in time, which allowed him to foresee future events with absolute certainty while remaining helpless to alter their outcomes.",
-    triggerHint: "Channel his sorcery by asking about the legendary golden castle, the High King of Britain, the divine sword of power, his mysterious wizardry, or the mythical isle of his final rest."
+    triggerHint: "Channel his sorcery by asking about the legendary golden castle, the High King of Britain, the divine sword of power, his mysterious wizardry, or the mythical isle of his final rest.",
+    tarotCard: {
+      name: "The Magician",
+      num: "I",
+      meaning: "Archetypal magic, manipulation of elements, and infinite resourcefulness."
+    }
   },
   { 
     name: "Leonardo Davinci", 
@@ -249,9 +324,14 @@ const SPIRITS: Spirit[] = [
     avatar: "🎨", 
     glow: "border-amber-600/20 text-amber-400",
     keywords: ["monalisa", "invention", "anatomy", "renaissance", "flight"],
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m21.jpg",
     fact: "A legendary polymath who sketched detailed concepts for helicopters, armored tanks, solar power concentrators, and double-hulled ships centuries before they could ever be built.",
-    triggerHint: "Trigger his creative genius by mentioning his enigmatic smiling portrait, his forward-looking mechanical drafts, his sketches of human muscles, the era of rebirth, or his designs for soaring."
+    triggerHint: "Trigger his creative genius by mentioning his enigmatic smiling portrait, his forward-looking mechanical drafts, his sketches of human muscles, the era of rebirth, or his designs for soaring.",
+    tarotCard: {
+      name: "The World",
+      num: "XXI",
+      meaning: "Absolute completion, creative integration of all disciplines, and wholeness."
+    }
   },
   { 
     name: "Cleopatra", 
@@ -261,9 +341,14 @@ const SPIRITS: Spirit[] = [
     avatar: "🐍", 
     glow: "border-yellow-500/20 text-yellow-300",
     keywords: ["egypt", "alexandria", "pharaoh", "asp", "caesar"],
-    image: "https://images.unsplash.com/photo-1504333631550-39e557696435?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m03.jpg",
     fact: "A highly educated ruler who spoke at least nine languages and was the only pharaoh of the Ptolemaic dynasty to actually learn the native Egyptian language to connect with her people.",
-    triggerHint: "Summon her Egyptian majesty by asking about her empire of gold, her grand seaside library capital, her sovereign title, the venomous snake, or her famous Roman general ally."
+    triggerHint: "Summon her Egyptian majesty by asking about her empire of gold, her grand seaside library capital, her sovereign title, the venomous snake, or her famous Roman general ally.",
+    tarotCard: {
+      name: "The Empress",
+      num: "III",
+      meaning: "Feminine sovereignty, luxury, abundance of the Nile, and political creation."
+    }
   },
   { 
     name: "Al Capone", 
@@ -273,9 +358,14 @@ const SPIRITS: Spirit[] = [
     avatar: "💼", 
     glow: "border-stone-500/20 text-stone-300",
     keywords: ["chicago", "bootlegger", "prohibition", "gangster", "scarface"],
-    image: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m15.jpg",
     fact: "Despite orchestrating multiple high-profile gangland hits, he was famously only ever convicted of federal income tax evasion and spent seven years in Alcatraz.",
-    triggerHint: "Trigger his boss instincts by mentioning his Illinois headquarters, his illicit spirits distribution, the era of dry laws, his syndicate mobster role, or his facial wound alias."
+    triggerHint: "Trigger his boss instincts by mentioning his Illinois headquarters, his illicit spirits distribution, the era of dry laws, his syndicate mobster role, or his facial wound alias.",
+    tarotCard: {
+      name: "The Devil",
+      num: "XV",
+      meaning: "Material attachment, illegal empires, and the self-imposed chains of greed."
+    }
   },
   { 
     name: "Rasputon", 
@@ -285,9 +375,14 @@ const SPIRITS: Spirit[] = [
     avatar: "👁️", 
     glow: "border-red-600/20 text-red-400",
     keywords: ["monk", "russia", "romanov", "poisoned", "healer"],
-    image: "https://images.unsplash.com/photo-1516339901601-2e1d62dc0c45?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m18.jpg",
     fact: "He survived multiple assassination attempts, including massive doses of cyanide and gunshots, leading contemporaries to believe he possessed dark supernatural immortality.",
-    triggerHint: "Channel his mysticism by asking about his religious title, his cold imperial homeland of tsars, the royal family he advised, the lethal substance he survived, or his hands-on therapy."
+    triggerHint: "Channel his mysticism by asking about his religious title, his cold imperial homeland of tsars, the royal family he advised, the lethal substance he survived, or his hands-on therapy.",
+    tarotCard: {
+      name: "The Moon",
+      num: "XVIII",
+      meaning: "Hypnotic illusion, shadow-self, hidden mysteries, and deep psychic depths."
+    }
   },
   { 
     name: "Odin", 
@@ -297,9 +392,14 @@ const SPIRITS: Spirit[] = [
     avatar: "⚡", 
     glow: "border-sky-500/20 text-sky-300",
     keywords: ["valhalla", "ragnarok", "asgard", "runes", "raven"],
-    image: "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m12.jpg",
     fact: "In Norse mythology, Odin hung himself upside down from the World Tree Yggdrasil for nine days and nights, sacrificing his eye to gain absolute cosmological wisdom and magic.",
-    triggerHint: "Rouse the Allfather by discussing the ultimate golden banquet hall, the twilight of the gods, his shining celestial city, his mystic sigil alphabet of power, or his two reporting birds."
+    triggerHint: "Rouse the Allfather by discussing the ultimate golden banquet hall, the twilight of the gods, his shining celestial city, his mystic sigil alphabet of power, or his two reporting birds.",
+    tarotCard: {
+      name: "The Hanged Man",
+      num: "XII",
+      meaning: "Sacrifice of self to gain cosmological vision and runic magic."
+    }
   },
   { 
     name: "Plato", 
@@ -309,9 +409,14 @@ const SPIRITS: Spirit[] = [
     avatar: "🏛️", 
     glow: "border-blue-400/20 text-blue-200",
     keywords: ["atlantis", "republic", "cave", "academy", "philosopher"],
-    image: "https://images.unsplash.com/photo-1519074002996-a69e7ac46a42?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m05.jpg",
     fact: "He founded the Academy in Athens, the Western world's first institution of higher learning, where he taught his most famous pupil, Aristotle, and wrote his legendary dialogues.",
-    triggerHint: "Trigger his profound dialectics by referencing the lost continent of myth, his masterwork on governance, his famous allegory of projections on the wall, his school of geometry, or his title of wisdom."
+    triggerHint: "Trigger his profound dialectics by referencing the lost continent of myth, his masterwork on governance, his famous allegory of projections on the wall, his school of geometry, or his title of wisdom.",
+    tarotCard: {
+      name: "The Hierophant",
+      num: "V",
+      meaning: "Philosophical orthodoxy, structured systems of higher education, and the Academy."
+    }
   },
   { 
     name: "Satan", 
@@ -321,9 +426,14 @@ const SPIRITS: Spirit[] = [
     avatar: "🔥", 
     glow: "border-red-900/40 text-red-500 font-bold",
     keywords: ["hell", "lucifer", "temptation", "rebellion", "underworld"],
-    image: "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m15.jpg",
     fact: "Commonly depicted as the great adversary, literature such as John Milton's Paradise Lost transformed him into a tragic, defiant figure famously asserting 'Better to reign in Hell than serve in Heaven.'",
-    triggerHint: "Unchain the Fallen Star by referencing the infinite burning abyss, his original name meaning Lightbringer, his seductive promptings of vanity, his war against the heavens, or the depths below."
+    triggerHint: "Unchain the Fallen Star by referencing the infinite burning abyss, his original name meaning Lightbringer, his seductive promptings of vanity, his war against the heavens, or the depths below.",
+    tarotCard: {
+      name: "The Devil",
+      num: "XV",
+      meaning: "Primal shadow work, unchained rebellion, and the temptation of material paths."
+    }
   },
   {
     name: "Nostradamus",
@@ -333,9 +443,14 @@ const SPIRITS: Spirit[] = [
     avatar: "🌌",
     glow: "border-purple-500/20 text-purple-300",
     keywords: ["prophecy", "quatrain", "centuries", "astrology", "seer"],
-    image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m09.jpg",
     fact: "He published 'Les Prophéties' in 1555, a collection of 942 poetic quatrains predicting future events, which remains in print today.",
-    triggerHint: "Elicit his future predictions by inquiring about his cryptic four-line verses, his major astrological computations, his written centuries of prophecy, or his vision of the end times."
+    triggerHint: "Elicit his future predictions by inquiring about his cryptic four-line verses, his major astrological computations, his written centuries of prophecy, or his vision of the end times.",
+    tarotCard: {
+      name: "The Hermit",
+      num: "IX",
+      meaning: "Solitary seeking of inner light, gazing into dark waters, and future prophecy."
+    }
   },
   {
     name: "Nikola Tesla",
@@ -345,9 +460,14 @@ const SPIRITS: Spirit[] = [
     avatar: "⚡",
     glow: "border-blue-400/20 text-blue-300",
     keywords: ["alternating", "wardenclyffe", "wireless", "frequency", "coil"],
-    image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m01.jpg",
     fact: "He envisioned a global system of wireless electricity and communication, constructing the Wardenclyffe Tower to demonstrate it.",
-    triggerHint: "Ignite his genius by talking about his system of multi-phase current, his wireless tower project on Long Island, his resonant induction transformer device, or the foundational trinity of 3, 6, and 9."
+    triggerHint: "Ignite his genius by talking about his system of multi-phase current, his wireless tower project on Long Island, his resonant induction transformer device, or the foundational trinity of 3, 6, and 9.",
+    tarotCard: {
+      name: "The Magician",
+      num: "I",
+      meaning: "Channelling lightning, cosmic resonance, and wireless manifestation of power."
+    }
   },
   {
     name: "Aleister Crowley",
@@ -357,9 +477,14 @@ const SPIRITS: Spirit[] = [
     avatar: "👁️‍🗨️",
     glow: "border-indigo-600/20 text-indigo-400",
     keywords: ["thelema", "magick", "telema", "egyptian", "baphomet"],
-    image: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m01.jpg",
     fact: "He founded the philosophical system of Thelema, authored the Book of the Law under celestial guidance in Cairo, and pioneered modern occultism.",
-    triggerHint: "Unlock his esoteric power by asking about his core philosophy of Will, his channeled Egyptian text, the spelling of true sorcery with a K, or his connection to the cosmic beast."
+    triggerHint: "Unlock his esoteric power by asking about his core philosophy of Will, his channeled Egyptian text, the spelling of true sorcery with a K, or his connection to the cosmic beast.",
+    tarotCard: {
+      name: "The Magician",
+      num: "I",
+      meaning: "Conscious magic under the True Will, channeling divine words, and occult alchemy."
+    }
   },
   {
     name: "Madame Blavatsky",
@@ -369,9 +494,14 @@ const SPIRITS: Spirit[] = [
     avatar: "🔮",
     glow: "border-rose-600/20 text-rose-300",
     keywords: ["theosophy", "mahatmas", "secret", "doctrine", "occult"],
-    image: "https://images.unsplash.com/photo-1516339901601-2e1d62dc0c45?w=500&q=80",
+    image: "https://raw.githubusercontent.com/ekg/tarot-api/master/static/cards/m02.jpg",
     fact: "Helena Blavatsky co-founded the Theosophical Society in 1875, introducing ancient Eastern concepts of karma and reincarnation to Western spiritualists.",
-    triggerHint: "Uncover her hidden mysteries by asking about the ancient master souls who guided her, her masterwork on the secret origin of the world, or her travel to sacred high lands."
+    triggerHint: "Uncover her hidden mysteries by asking about the ancient master souls who guided her, her masterwork on the secret origin of the world, or her travel to sacred high lands.",
+    tarotCard: {
+      name: "The High Priestess",
+      num: "II",
+      meaning: "Keeper of high esoteric secrets, intuition, and unseen cosmic doctrines."
+    }
   }
 ];
 
@@ -1830,6 +1960,19 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
                         {spirit.triggerHint}
                       </p>
                     </div>
+
+                    {/* Tarot Alignment */}
+                    {spirit.tarotCard && (
+                      <div className="pt-2 border-t border-zinc-900/40 space-y-1">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[7px] uppercase tracking-widest text-amber-500 font-extrabold block font-mono">TAROT ALIGNMENT</span>
+                          <span className="text-[6.5px] font-bold text-amber-400 font-mono">{spirit.tarotCard.num}</span>
+                        </div>
+                        <p className="text-[9px] leading-relaxed text-zinc-400 font-google-sans">
+                          <strong className="text-zinc-200">{spirit.tarotCard.name}</strong> — {spirit.tarotCard.meaning}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </button>
               );
