@@ -21,7 +21,7 @@ interface Message {
   role: 'user' | 'model';
   text: string;
   timestamp: Date;
-  mode?: 'laevus' | 'spirit' | 'tarot';
+  mode?: 'laevus' | 'spirit' | 'tarot' | 'tarot-persona' | 'tarot-physical';
   spiritName?: string;
 }
 
@@ -1044,6 +1044,7 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
   
   // Local active spirit state
   const [activeSpirit, setActiveSpirit] = useState<Spirit | null>(null);
+  const [activeTarotPersona, setActiveTarotPersona] = useState<string | null>(null);
   
   // Tarot State
   const [tarotQuestion, setTarotQuestion] = useState('');
@@ -1051,6 +1052,12 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
   const [isDrawing, setIsDrawing] = useState(false);
   const [flippedCount, setFlippedCount] = useState(0);
   const [showAboutModal, setShowAboutModal] = useState(false);
+  const [selectedEncyclopediaCard, setSelectedEncyclopediaCard] = useState<Omit<TarotCard, 'position'> | null>(null);
+  const [encyclopediaQuestion, setEncyclopediaQuestion] = useState('');
+  const [tarotMode, setTarotMode] = useState<'digital' | 'physical'>('digital');
+  const [physicalPastCard, setPhysicalPastCard] = useState<string>('');
+  const [physicalPresentCard, setPhysicalPresentCard] = useState<string>('');
+  const [physicalFutureCard, setPhysicalFutureCard] = useState<string>('');
 
   // Stats / Streak states
   const [streakCount, setStreakCount] = useState(1);
@@ -1066,6 +1073,7 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
   const lastSyncedUid = useRef<string | null | undefined>(undefined);
   const currentUserRef = useRef<User | null>(null);
   const activeSpiritRef = useRef<Spirit | null>(null);
+  const activeTarotPersonaRef = useRef<string | null>(null);
 
   // Keep refs up-to-date
   useEffect(() => {
@@ -1075,6 +1083,10 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
   useEffect(() => {
     activeSpiritRef.current = activeSpirit;
   }, [activeSpirit]);
+
+  useEffect(() => {
+    activeTarotPersonaRef.current = activeTarotPersona;
+  }, [activeTarotPersona]);
 
   // Mount logic: Load statistics, seed sentiment and load welcome phrases
   useEffect(() => {
@@ -1458,12 +1470,112 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
     localStorage.setItem('laevus_transcripts_v1', JSON.stringify(updated));
   };
 
-  const handleSend = async (textToSend: string, forceMode?: 'laevus' | 'spirit' | 'tarot', customCards?: TarotCard[]) => {
+  const handleSend = async (textToSend: string, forceMode?: 'laevus' | 'spirit' | 'tarot' | 'tarot-persona' | 'tarot-physical', customCards?: TarotCard[]) => {
     if (!textToSend.trim() && !customCards) return;
     if (isTyping) return;
 
-    const currentMode = forceMode || (activeSpirit ? 'spirit' : 'laevus');
-    const trimmedText = textToSend.trim();
+    let currentMode = forceMode || (activeTarotPersona ? 'tarot-persona' : activeSpirit ? 'spirit' : 'laevus');
+    let trimmedText = textToSend.trim();
+
+    // Support auto-detecting [MODE 1] Card: <Name>. User Question: <Question>
+    const mode1Match = trimmedText.match(/^\[MODE\s*1\]\s*Card:\s*(.+?)\.\s*User\s*Question:\s*(.+)$/i);
+    if (mode1Match && !forceMode) {
+      const parsedCardName = mode1Match[1].trim();
+      const questionText = mode1Match[2].trim();
+
+      const cardExists = TAROT_DECK.some(c => c.name.toLowerCase() === parsedCardName.toLowerCase());
+      const normalizedCardName = cardExists 
+        ? (TAROT_DECK.find(c => c.name.toLowerCase() === parsedCardName.toLowerCase())?.name || parsedCardName)
+        : parsedCardName;
+
+      setActiveSpirit(null);
+      setActiveTarotPersona(normalizedCardName);
+      currentMode = 'tarot-persona';
+      trimmedText = questionText;
+
+      const summonMsg: Message = {
+        id: crypto.randomUUID(),
+        role: 'model',
+        text: `[ Embodied the live archetype of ${normalizedCardName.toUpperCase()} ]\n\nI have aligned my energy with this physical layer. Ask me of my secrets or seek my guidance.`,
+        timestamp: new Date(),
+        mode: 'tarot-persona'
+      };
+
+      const userMsg: Message = {
+        id: crypto.randomUUID(),
+        role: 'user',
+        text: questionText,
+        timestamp: new Date(),
+        mode: 'tarot-persona'
+      };
+
+      setMessages([
+        {
+          id: 'welcome',
+          role: 'model',
+          text: `You have crossed the threshold. Speak directly to the living soul of ${normalizedCardName}.`,
+          timestamp: new Date(),
+          mode: 'tarot-persona'
+        },
+        summonMsg,
+        userMsg
+      ]);
+      setInput('');
+      setIsTyping(true);
+
+      const nextCount = readingCount + 1;
+      setReadingCount(nextCount);
+      localStorage.setItem('laevus_readings_count_v1', nextCount.toString());
+
+      const score = computeSentiment(questionText);
+      const newScores = [...sentimentScores, score];
+      setSentimentScores(newScores);
+      localStorage.setItem('laevus_sentiment_timeline', JSON.stringify(newScores));
+
+      try {
+        const reply = await metaphysicalConsultation(
+          questionText,
+          [],
+          {
+            mode: 'tarot-persona',
+            personaCardName: normalizedCardName,
+            readingCount: nextCount
+          }
+        );
+
+        const modelMsg: Message = {
+          id: crypto.randomUUID(),
+          role: 'model',
+          text: reply,
+          timestamp: new Date(),
+          mode: 'tarot-persona'
+        };
+
+        setMessages(prev => [...prev, modelMsg]);
+
+        addTranscriptRecord(
+          'madam',
+          `Conversed with ${normalizedCardName}`,
+          `User: ${questionText}\n\n${normalizedCardName}: ${reply}`,
+          {
+            querentPrompt: questionText,
+            madamBlavatskyReply: reply
+          }
+        );
+      } catch (err) {
+        console.error(err);
+        const errText = "An error occurred with the AI service. Please verify that your GEMINI_API_KEY environment variable is configured correctly.";
+        setMessages(prev => [...prev, {
+          id: crypto.randomUUID(),
+          role: 'model',
+          text: errText,
+          timestamp: new Date()
+        }]);
+      } finally {
+        setIsTyping(false);
+      }
+      return;
+    }
 
     const nextCount = readingCount + 1;
     setReadingCount(nextCount);
@@ -1478,7 +1590,7 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
     const userMsg: Message = {
       id: crypto.randomUUID(),
       role: 'user',
-      text: trimmedText || `Draw Tarot: "${tarotQuestion || "General life alignment"}"`,
+      text: trimmedText || (currentMode === 'tarot-physical' ? `Synthesize Tarot: "${tarotQuestion || "General alignment"}"` : `Draw Tarot: "${tarotQuestion || "General life alignment"}"`),
       timestamp: new Date(),
       mode: currentMode,
       spiritName: activeSpirit?.name
@@ -1505,6 +1617,27 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
             mode: 'tarot',
             tarotCards: customCards,
             tarotQuestion: tarotQuestion || "General alignment",
+            readingCount: nextCount
+          }
+        );
+      } else if (currentMode === 'tarot-physical' && customCards) {
+        reply = await metaphysicalConsultation(
+          `Synthesize a Physical Realm Three-Card reading for my question: "${tarotQuestion || "General life alignment"}"`,
+          formattedHistory,
+          {
+            mode: 'tarot-physical',
+            tarotCards: customCards,
+            tarotQuestion: tarotQuestion || "General alignment",
+            readingCount: nextCount
+          }
+        );
+      } else if (currentMode === 'tarot-persona' && activeTarotPersona) {
+        reply = await metaphysicalConsultation(
+          trimmedText,
+          formattedHistory,
+          {
+            mode: 'tarot-persona',
+            personaCardName: activeTarotPersona,
             readingCount: nextCount
           }
         );
@@ -1543,15 +1676,25 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
       setMessages(prev => [...prev, modelMsg]);
 
       // Save to transcripts
-      if (currentMode === 'tarot' && customCards) {
+      if ((currentMode === 'tarot' || currentMode === 'tarot-physical') && customCards) {
         const cardsDesc = customCards.map(c => `[${c.position}] ${c.symbol} ${c.name} - ${c.meaning}`).join('\n');
         addTranscriptRecord(
           'tarot',
-          `Spread: ${tarotQuestion || 'Life Alignment'}`,
+          `${currentMode === 'tarot-physical' ? 'Physical Synthesis' : 'Digital Draw'}: ${tarotQuestion || 'Life Alignment'}`,
           `Question: ${tarotQuestion}\n\nCards Drawn:\n${cardsDesc}\n\nInterpretation:\n${reply}`,
           {
             querentPrompt: tarotQuestion || "General alignment",
             drawnCards: customCards,
+            madamBlavatskyReply: reply
+          }
+        );
+      } else if (currentMode === 'tarot-persona' && activeTarotPersona) {
+        addTranscriptRecord(
+          'madam', // store in General/Oracle tab
+          `Conversed with ${activeTarotPersona}`,
+          `User: ${trimmedText}\n\n${activeTarotPersona}: ${reply}`,
+          {
+            querentPrompt: trimmedText,
             madamBlavatskyReply: reply
           }
         );
@@ -1592,6 +1735,21 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
     }
   };
 
+  useEffect(() => {
+    // Support URL parameters for deep-linking [MODE 1] Card: <Name>. User Question: <Question>
+    const params = new URLSearchParams(window.location.search);
+    const modeParam = params.get('mode');
+    const cardParam = params.get('card');
+    const questionParam = params.get('question');
+    
+    if (cardParam && questionParam && modeParam === '1') {
+      const timer = setTimeout(() => {
+        handleSend(`[MODE 1] Card: ${cardParam}. User Question: ${questionParam}`);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
   const handleSummonSpirit = (spirit: Spirit) => {
     setActiveSpirit(spirit);
     setActiveView('chat');
@@ -1618,6 +1776,51 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
     };
     setActiveSpirit(null);
     setMessages(prev => [...prev, releaseMsg]);
+  };
+
+  const handleSummonTarotPersona = (cardName: string) => {
+    setActiveSpirit(null);
+    setActiveTarotPersona(cardName);
+    const summonMsg: Message = {
+      id: crypto.randomUUID(),
+      role: 'model',
+      text: `[ Embodied the live archetype of ${cardName.toUpperCase()} ]\n\nI have aligned my energy with this physical layer. Ask me of my secrets or seek my guidance.`,
+      timestamp: new Date(),
+      mode: 'tarot-persona'
+    };
+    setMessages([
+      {
+        id: 'welcome',
+        role: 'model',
+        text: `You have crossed the threshold. Speak directly to the living soul of ${cardName}.`,
+        timestamp: new Date(),
+        mode: 'tarot-persona'
+      },
+      summonMsg
+    ]);
+    setActiveView('chat');
+  };
+
+  const handleReleaseTarotPersona = () => {
+    if (!activeTarotPersona) return;
+    const releaseMsg: Message = {
+      id: crypto.randomUUID(),
+      role: 'model',
+      text: `[ Ended session with ${activeTarotPersona}. LAEVUS returns as your primary guide. ]`,
+      timestamp: new Date(),
+      mode: 'laevus'
+    };
+    setActiveTarotPersona(null);
+    setMessages(prev => [...prev, releaseMsg]);
+  };
+
+  const handleStartEncyclopediaConversation = (cardName: string, questionText: string) => {
+    handleSummonTarotPersona(cardName);
+    if (questionText.trim()) {
+      setTimeout(() => {
+        handleSend(questionText, 'tarot-persona');
+      }, 500);
+    }
   };
 
   const handleDrawTarot = async () => {
@@ -1650,6 +1853,53 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
     
     handleSend(`Perform a tailored Tarot reading regarding: "${tarotQuestion}"`, 'tarot', drawn);
     setTarotQuestion('');
+  };
+
+  const handlePhysicalSynthesis = async () => {
+    if (!tarotQuestion.trim()) {
+      alert("Please define the question you wish the cards to answer.");
+      return;
+    }
+    if (!physicalPastCard || !physicalPresentCard || !physicalFutureCard) {
+      alert("Please select cards for all three positions (Past, Present, and Future).");
+      return;
+    }
+
+    const pastObj = TAROT_DECK.find(c => c.name === physicalPastCard);
+    const presentObj = TAROT_DECK.find(c => c.name === physicalPresentCard);
+    const futureObj = TAROT_DECK.find(c => c.name === physicalFutureCard);
+
+    if (!pastObj || !presentObj || !futureObj) {
+      alert("An error occurred. Please select valid cards.");
+      return;
+    }
+
+    const physicalCards: TarotCard[] = [
+      { ...pastObj, position: 'Past' },
+      { ...presentObj, position: 'Present' },
+      { ...futureObj, position: 'Future' }
+    ];
+
+    setIsDrawing(true);
+    setFlippedCount(0);
+    setDrawnCards([]);
+
+    setDrawnCards(physicalCards);
+
+    for (let i = 1; i <= 3; i++) {
+      await new Promise(res => setTimeout(res, 500));
+      setFlippedCount(i);
+    }
+
+    await new Promise(res => setTimeout(res, 400));
+    setIsDrawing(false);
+    setActiveView('chat');
+
+    handleSend(`Perform a Physical Realm Synthesis reading regarding: "${tarotQuestion}"`, 'tarot-physical', physicalCards);
+    setTarotQuestion('');
+    setPhysicalPastCard('');
+    setPhysicalPresentCard('');
+    setPhysicalFutureCard('');
   };
 
   // Compute metrics for The Inner Work
@@ -1709,6 +1959,29 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
             </div>
           )}
 
+          {/* Active Tarot Persona Banner */}
+          {activeTarotPersona && (
+            <div className="px-4 py-2 bg-zinc-950 flex items-center justify-between text-xs mb-2 rounded-lg border border-amber-500/25 flex-shrink-0 font-google-sans text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.04)]">
+              <div className="flex items-center gap-3">
+                <span className="text-sm">🃏</span>
+                <div className="font-google-sans text-left">
+                  <div className="flex items-center">
+                    <span className="font-bold text-zinc-200 font-google-sans">{activeTarotPersona} Persona</span>
+                    <span className="mx-2 text-zinc-700">|</span>
+                    <span className="text-zinc-500 text-[10px] font-google-sans">Living archetype of the Major Arcana</span>
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={handleReleaseTarotPersona}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 text-amber-400 text-[9px] uppercase hover:bg-amber-500/10 transition-colors cursor-pointer border border-transparent font-google-sans"
+              >
+                <X className="w-2.5 h-2.5" />
+                <span className="font-google-sans">Depart</span>
+              </button>
+            </div>
+          )}
+
           {/* Messages Ledger (standard size) */}
           <div className="flex-1 py-2 overflow-y-auto space-y-3 border-b border-zinc-900/40 pr-2 min-h-0">
             {messages.map((m) => {
@@ -1747,6 +2020,15 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
 
           {/* Input block */}
           <div className="pt-4 bg-transparent">
+            {/* Quick preset chips */}
+            <div className="flex flex-wrap gap-2 mb-2">
+              <button
+                onClick={() => setInput("[MODE 1] Card: The Moon. User Question: Why do I feel anxious today?")}
+                className="text-[9px] uppercase tracking-wider font-bold px-2.5 py-1 rounded bg-zinc-900/60 hover:bg-amber-500/10 text-zinc-400 hover:text-amber-400 border border-zinc-800 transition-colors cursor-pointer"
+              >
+                🌙 Mode 1: Query "The Moon"
+              </button>
+            </div>
             <div className="relative flex items-center rounded-lg bg-zinc-950 focus-within:ring-1 focus-within:ring-[#E60026]/40 transition-all p-1.5">
               <textarea
                 value={input}
@@ -1778,106 +2060,327 @@ export const LaevusChat: React.FC<LaevusChatProps> = ({
         </div>
       )}
 
+      {/* VIEW: TAROT ENCYCLOPEDIA */}
+      {activeView === 'encyclopedia' && (
+        <div className="flex-1 min-h-0 flex flex-col p-1 mb-2 relative animate-fadeIn w-full max-w-4xl mx-auto overflow-y-auto font-google-sans pr-1">
+          <div className="border-b border-zinc-900/40 pb-3 mb-4">
+            <span className="text-[10px] uppercase tracking-widest text-[#E60026] font-bold block font-google-sans">The Living Tarot Encyclopedia</span>
+            <span className="text-xs text-zinc-500 block mt-0.5 font-google-sans">Browse the Major Arcana and select a card to align with and speak directly to its living archetype.</span>
+          </div>
+
+          {!selectedEncyclopediaCard ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {TAROT_DECK.map((card) => (
+                <div
+                  key={card.name}
+                  onClick={() => {
+                    setSelectedEncyclopediaCard(card);
+                    setEncyclopediaQuestion('');
+                  }}
+                  className="group bg-zinc-950 border border-zinc-900 rounded-lg p-3 hover:border-amber-500/30 transition-all duration-300 cursor-pointer flex flex-col items-center text-center shadow-[0_4px_12px_rgba(0,0,0,0.5)] hover:shadow-[0_4px_20px_rgba(245,158,11,0.03)] hover:-translate-y-0.5"
+                >
+                  <div className="w-full aspect-[2/3] rounded bg-zinc-900 border border-zinc-800/60 overflow-hidden relative mb-2.5">
+                    {card.image ? (
+                      <img
+                        src={card.image}
+                        alt={card.name}
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover grayscale opacity-45 group-hover:grayscale-0 group-hover:opacity-85 transition-all duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-3xl opacity-40 bg-zinc-900 font-mono">🃏</div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent opacity-60" />
+                    <span className="absolute bottom-2 right-2 text-lg drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">{card.symbol}</span>
+                  </div>
+                  <h3 className="font-bold text-xs text-zinc-200 group-hover:text-amber-400 transition-colors uppercase tracking-wider">{card.name}</h3>
+                  <span className="text-[9px] text-zinc-500 mt-1 line-clamp-1 group-hover:text-zinc-400 transition-colors">{card.description}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-zinc-950 border border-zinc-900/60 rounded-xl p-4 sm:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.6)] flex flex-col md:flex-row gap-6 animate-fadeIn">
+              <div className="w-full md:w-2/5 flex flex-col items-center">
+                <div className="w-full max-w-[200px] aspect-[2/3] rounded-lg bg-zinc-900 border border-zinc-800 overflow-hidden relative shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
+                  {selectedEncyclopediaCard.image ? (
+                    <img
+                      src={selectedEncyclopediaCard.image}
+                      alt={selectedEncyclopediaCard.name}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover grayscale opacity-75 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-5xl opacity-40 font-mono">🃏</div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  <span className="absolute bottom-4 right-4 text-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">{selectedEncyclopediaCard.symbol}</span>
+                </div>
+                <button
+                  onClick={() => setSelectedEncyclopediaCard(null)}
+                  className="mt-4 text-[10px] uppercase font-bold tracking-widest text-zinc-500 hover:text-zinc-200 transition-colors flex items-center gap-1"
+                >
+                  ← Return to Grid
+                </button>
+              </div>
+
+              <div className="flex-1 flex flex-col text-left space-y-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-xl font-bold font-google-sans text-amber-400 tracking-wide uppercase">{selectedEncyclopediaCard.name}</h2>
+                    <span className="text-xl">{selectedEncyclopediaCard.symbol}</span>
+                  </div>
+                  <p className="text-xs text-zinc-400 font-medium tracking-wide mt-1 uppercase text-zinc-500">{selectedEncyclopediaCard.description}</p>
+                </div>
+
+                <div className="bg-zinc-900/30 border border-zinc-900/60 rounded-lg p-3.5 space-y-2">
+                  <h4 className="text-[10px] uppercase font-bold tracking-widest text-zinc-400">Esoteric Core Meaning</h4>
+                  <p className="text-xs text-zinc-300 leading-relaxed font-google-sans">{selectedEncyclopediaCard.meaning}</p>
+                </div>
+
+                <div className="border-t border-zinc-900/60 pt-4 space-y-3">
+                  <div>
+                    <h4 className="text-[10px] uppercase font-bold tracking-widest text-amber-500/70 mb-1">Converse with Archetype (Mode 1)</h4>
+                    <p className="text-[10px] text-zinc-500">Pose a question to align with this card. The intelligence will embody its raw energy to speak with you.</p>
+                  </div>
+
+                  <div className="flex flex-col gap-2.5">
+                    <textarea
+                      placeholder={`Pose your question to the soul of ${selectedEncyclopediaCard.name}... (e.g. "What challenges must I overcome to align with your energy?")`}
+                      value={encyclopediaQuestion}
+                      onChange={(e) => setEncyclopediaQuestion(e.target.value)}
+                      className="w-full bg-zinc-900 border border-zinc-850 rounded-lg p-3 text-xs text-zinc-300 focus:outline-none focus:border-amber-500/30 placeholder-zinc-700 resize-none h-20 font-google-sans"
+                    />
+                    <button
+                      onClick={() => handleStartEncyclopediaConversation(selectedEncyclopediaCard.name, encyclopediaQuestion)}
+                      disabled={!encyclopediaQuestion.trim()}
+                      className={`py-2 px-4 rounded-lg font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
+                        encyclopediaQuestion.trim()
+                          ? 'bg-amber-500 hover:bg-amber-600 text-black cursor-pointer shadow-[0_2px_10px_rgba(245,158,11,0.2)]'
+                          : 'bg-zinc-900 text-zinc-700 cursor-not-allowed'
+                      }`}
+                    >
+                      <span>🕯️ Initiate Seance</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* VIEW: GET A FREE READING! */}
       {activeView === 'tarot' && (
         <div className="p-3 sm:p-4 mb-2 relative animate-fadeIn space-y-4 w-full max-w-3xl mx-auto flex-1 flex flex-col justify-center min-h-0">
-          <div className="border-b border-zinc-900/40 pb-2">
-            <span className="text-[10px] uppercase tracking-widest text-[#E60026] font-bold block font-google-sans">Tarot Card Draw</span>
-            <span className="text-xs text-zinc-500 block mt-0.5 font-google-sans">Receive a Past, Present, and Future three-card Tarot reading.</span>
+          <div className="border-b border-zinc-900/40 pb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+              <span className="text-[10px] uppercase tracking-widest text-[#E60026] font-bold block font-google-sans">Tarot Sanctuary</span>
+              <span className="text-xs text-zinc-500 block mt-0.5 font-google-sans">Invoke the guidance of the Major Arcana using digital draws or physical cards.</span>
+            </div>
+            
+            {/* Mode Tabs */}
+            <div className="flex gap-2.5 self-start bg-zinc-950 p-1 rounded-lg border border-zinc-900">
+              <button
+                onClick={() => setTarotMode('digital')}
+                disabled={isDrawing}
+                className={`px-3 py-1 text-[9px] uppercase tracking-wider font-bold rounded-md transition-all ${
+                  tarotMode === 'digital'
+                    ? 'bg-[#E60026] text-black shadow-md'
+                    : 'text-zinc-500 hover:text-zinc-300 cursor-pointer'
+                }`}
+              >
+                Digital Oracle
+              </button>
+              <button
+                onClick={() => setTarotMode('physical')}
+                disabled={isDrawing}
+                className={`px-3 py-1 text-[9px] uppercase tracking-wider font-bold rounded-md transition-all ${
+                  tarotMode === 'physical'
+                    ? 'bg-[#E60026] text-black shadow-md'
+                    : 'text-zinc-500 hover:text-zinc-300 cursor-pointer'
+                }`}
+              >
+                Physical Realm Catalyst
+              </button>
+            </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
-              <label className="text-[9px] text-zinc-500 uppercase tracking-widest block font-bold mb-1 font-google-sans">Enter your question below:</label>
+              <label className="text-[9px] text-zinc-500 uppercase tracking-widest block font-bold mb-1 font-google-sans">Enter your query / question:</label>
               <input 
                 type="text"
                 value={tarotQuestion}
                 onChange={(e) => setTarotQuestion(e.target.value)}
                 disabled={isDrawing}
-                placeholder="e.g. Will my current project succeed?"
-                className="w-full bg-zinc-950 border border-zinc-900 focus:border-[#E60026] text-xs px-3 py-2 rounded-lg text-zinc-300 outline-none font-google-sans placeholder-zinc-850"
+                placeholder="e.g. What secrets await my journey in this upcoming eclipse?"
+                className="w-full bg-zinc-950 border border-zinc-900 focus:border-[#E60026] text-xs px-3 py-2.5 rounded-lg text-zinc-300 outline-none font-google-sans placeholder-zinc-850 shadow-md"
               />
             </div>
 
-            {drawnCards.length > 0 && (
-              <div className="grid grid-cols-3 gap-3 pt-2">
-                {drawnCards.map((card, idx) => {
-                  const isFlipped = flippedCount > idx;
-                  return (
-                    <div 
-                      key={card.name}
-                      className="w-full max-w-[145px] sm:max-w-[165px] mx-auto"
+            {tarotMode === 'digital' ? (
+              <div className="space-y-4">
+                {drawnCards.length > 0 && (
+                  <div className="grid grid-cols-3 gap-3 pt-2">
+                    {drawnCards.map((card, idx) => {
+                      const isFlipped = flippedCount > idx;
+                      return (
+                        <div 
+                          key={card.name}
+                          className="w-full max-w-[145px] sm:max-w-[165px] mx-auto"
+                        >
+                          {isFlipped ? (
+                            <div className="relative overflow-hidden aspect-[2/3.1] rounded-xl border border-zinc-800/60 flex flex-col justify-between items-center bg-black group hover:scale-[1.05] transition-all duration-300 shadow-[0_8px_30px_rgba(0,0,0,0.8)] hover:border-[#E60026]/40">
+                              <img 
+                                src={card.image} 
+                                alt={card.name} 
+                                referrerPolicy="no-referrer"
+                                className="absolute inset-0 w-full h-full object-cover opacity-85 group-hover:scale-110 transition-transform duration-700"
+                              />
+                              <div className="absolute inset-1.5 border border-amber-500/20 rounded-lg pointer-events-none z-10 shadow-[inset_0_0_12px_rgba(0,0,0,0.6)] group-hover:border-amber-500/40 transition-colors" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/70 z-10 pointer-events-none" />
+                              <div className="relative z-20 pt-2.5 flex flex-col items-center">
+                                <span className="text-[7px] text-[#E60026] uppercase font-mono tracking-widest font-bold bg-black/85 border border-[#E60026]/30 px-2 py-0.5 rounded-full shadow-[0_2px_6px_rgba(0,0,0,0.5)]">
+                                  {card.position}
+                                </span>
+                              </div>
+                              <div className="relative z-20 w-full px-2 pb-2 text-center">
+                                <div className="bg-black/80 backdrop-blur-sm border border-zinc-900/60 px-1.5 py-1 rounded-md max-w-full shadow-lg">
+                                  <span className="text-[8px] sm:text-[9px] font-bold text-zinc-100 leading-none block font-google-sans uppercase tracking-wider truncate">
+                                    {card.name}
+                                  </span>
+                                  <span className="text-[6.5px] sm:text-[7px] text-zinc-400 font-mono block mt-0.5 leading-none truncate">
+                                    {card.description}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="relative overflow-hidden aspect-[2/3.1] rounded-xl border border-zinc-900 bg-zinc-950 flex flex-col items-center justify-center p-3 text-center cursor-pointer group hover:border-[#E60026]/50 hover:shadow-[0_0_20px_rgba(230,0,38,0.15)] transition-all duration-300 shadow-[inset_0_1px_4px_rgba(255,255,255,0.01)]">
+                              <div className="absolute inset-1.5 border border-zinc-800/40 rounded-lg pointer-events-none" />
+                              <div className="absolute inset-0 bg-[radial-gradient(#E60026_1px,transparent_1px)] bg-[size:7px_7px] opacity-[0.18] rounded-lg group-hover:opacity-[0.3] transition-opacity" />
+                              <div className="absolute w-12 h-12 rounded-full border border-dashed border-zinc-800/50 animate-[spin_15s_linear_infinite]" />
+                              <div className="absolute w-16 h-16 rounded-full border border-dotted border-zinc-900/80 animate-[spin_30s_linear_infinite] pointer-events-none" />
+                              <div className="w-9 h-9 rounded-full border border-zinc-850 flex items-center justify-center text-zinc-400 group-hover:text-[#ff334b] group-hover:border-[#E60026]/40 transition-all shadow-[inset_0_1px_3px_rgba(255,255,255,0.01)] text-base relative z-10 bg-zinc-950">
+                                👁️
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                <button
+                  onClick={handleDrawTarot}
+                  disabled={isDrawing || !tarotQuestion.trim()}
+                  className={`w-full py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer font-google-sans ${
+                    tarotQuestion.trim() && !isDrawing
+                      ? 'bg-[#E60026] text-black hover:bg-[#ff334b]'
+                      : 'bg-zinc-950 text-zinc-800 cursor-not-allowed border border-zinc-900/50'
+                  }`}
+                >
+                  {isDrawing ? "DRAWING CARDS..." : "DRAW 3 CARDS"}
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                  <div className="flex flex-col text-left space-y-1">
+                    <span className="text-[9px] uppercase tracking-widest font-bold text-zinc-500">1. Past Energy</span>
+                    <select
+                      value={physicalPastCard}
+                      onChange={(e) => setPhysicalPastCard(e.target.value)}
+                      disabled={isDrawing}
+                      className="bg-zinc-950 border border-zinc-900 text-zinc-300 text-xs rounded-lg px-3 py-2.5 outline-none w-full font-google-sans focus:border-[#E60026] cursor-pointer"
                     >
-                      {isFlipped ? (
-                        <div className="relative overflow-hidden aspect-[2/3.1] rounded-xl border border-zinc-800/60 flex flex-col justify-between items-center bg-black group hover:scale-[1.05] transition-all duration-300 shadow-[0_8px_30px_rgba(0,0,0,0.8)] hover:border-[#E60026]/40">
-                          {/* Main cartoon/anime illustration */}
-                          <img 
-                            src={card.image} 
-                            alt={card.name} 
-                            referrerPolicy="no-referrer"
-                            className="absolute inset-0 w-full h-full object-cover opacity-85 group-hover:scale-110 transition-transform duration-700"
-                          />
-                          
-                          {/* Elegant gold frame overlay to look like a physical card */}
-                          <div className="absolute inset-1.5 border border-amber-500/20 rounded-lg pointer-events-none z-10 shadow-[inset_0_0_12px_rgba(0,0,0,0.6)] group-hover:border-amber-500/40 transition-colors" />
-                          
-                          {/* Dark vignette gradient */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/70 z-10 pointer-events-none" />
-                          
-                          {/* Top: Position Tag */}
-                          <div className="relative z-20 pt-2.5 flex flex-col items-center">
-                            <span className="text-[7px] text-[#E60026] uppercase font-mono tracking-widest font-bold bg-black/85 border border-[#E60026]/30 px-2 py-0.5 rounded-full shadow-[0_2px_6px_rgba(0,0,0,0.5)]">
-                              {card.position}
-                            </span>
-                          </div>
-                          
-                          {/* Bottom: Nameplate with glassmorphic backing */}
-                          <div className="relative z-20 w-full px-2 pb-2 text-center">
-                            <div className="bg-black/80 backdrop-blur-sm border border-zinc-900/60 px-1.5 py-1 rounded-md max-w-full shadow-lg">
-                              <span className="text-[8px] sm:text-[9px] font-bold text-zinc-100 leading-none block font-google-sans uppercase tracking-wider truncate">
-                                {card.name}
+                      <option value="">Select Card...</option>
+                      {TAROT_DECK.map(c => <option key={c.name} value={c.name}>{c.symbol} {c.name}</option>)}
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col text-left space-y-1">
+                    <span className="text-[9px] uppercase tracking-widest font-bold text-zinc-500">2. Present Energy</span>
+                    <select
+                      value={physicalPresentCard}
+                      onChange={(e) => setPhysicalPresentCard(e.target.value)}
+                      disabled={isDrawing}
+                      className="bg-zinc-950 border border-zinc-900 text-zinc-300 text-xs rounded-lg px-3 py-2.5 outline-none w-full font-google-sans focus:border-[#E60026] cursor-pointer"
+                    >
+                      <option value="">Select Card...</option>
+                      {TAROT_DECK.map(c => <option key={c.name} value={c.name}>{c.symbol} {c.name}</option>)}
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col text-left space-y-1">
+                    <span className="text-[9px] uppercase tracking-widest font-bold text-zinc-500">3. Future Energy</span>
+                    <select
+                      value={physicalFutureCard}
+                      onChange={(e) => setPhysicalFutureCard(e.target.value)}
+                      disabled={isDrawing}
+                      className="bg-zinc-950 border border-zinc-900 text-zinc-300 text-xs rounded-lg px-3 py-2.5 outline-none w-full font-google-sans focus:border-[#E60026] cursor-pointer"
+                    >
+                      <option value="">Select Card...</option>
+                      {TAROT_DECK.map(c => <option key={c.name} value={c.name}>{c.symbol} {c.name}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Previews of selected physical cards */}
+                {physicalPastCard && physicalPresentCard && physicalFutureCard && (
+                  <div className="grid grid-cols-3 gap-3 pt-2">
+                    {[
+                      { name: physicalPastCard, pos: 'Past' },
+                      { name: physicalPresentCard, pos: 'Present' },
+                      { name: physicalFutureCard, pos: 'Future' }
+                    ].map((item, idx) => {
+                      const cardObj = TAROT_DECK.find(c => c.name === item.name);
+                      return (
+                        <div key={idx} className="w-full max-w-[145px] sm:max-w-[165px] mx-auto animate-fadeIn">
+                          <div className="relative overflow-hidden aspect-[2/3.1] rounded-xl border border-zinc-800/60 flex flex-col justify-between items-center bg-black group hover:scale-[1.05] transition-all duration-300 shadow-[0_8px_30px_rgba(0,0,0,0.8)] hover:border-[#E60026]/40">
+                            {cardObj?.image && (
+                              <img 
+                                src={cardObj.image} 
+                                alt={cardObj.name} 
+                                referrerPolicy="no-referrer"
+                                className="absolute inset-0 w-full h-full object-cover opacity-85 group-hover:scale-110 transition-transform duration-700"
+                              />
+                            )}
+                            <div className="absolute inset-1.5 border border-amber-500/20 rounded-lg pointer-events-none z-10 shadow-[inset_0_0_12px_rgba(0,0,0,0.6)]" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/70 z-10 pointer-events-none" />
+                            <div className="relative z-20 pt-2.5 flex flex-col items-center">
+                              <span className="text-[7px] text-[#E60026] uppercase font-mono tracking-widest font-bold bg-black/85 border border-[#E60026]/30 px-2 py-0.5 rounded-full">
+                                {item.pos}
                               </span>
-                              <span className="text-[6.5px] sm:text-[7px] text-zinc-400 font-mono block mt-0.5 leading-none truncate">
-                                {card.description}
-                              </span>
+                            </div>
+                            <div className="relative z-20 w-full px-2 pb-2 text-center">
+                              <div className="bg-black/80 backdrop-blur-sm border border-zinc-900/60 px-1.5 py-1 rounded-md max-w-full">
+                                <span className="text-[8px] sm:text-[9px] font-bold text-zinc-100 uppercase tracking-wider block truncate">
+                                  {item.name}
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      ) : (
-                        <div className="relative overflow-hidden aspect-[2/3.1] rounded-xl border border-zinc-900 bg-zinc-950 flex flex-col items-center justify-center p-3 text-center cursor-pointer group hover:border-[#E60026]/50 hover:shadow-[0_0_20px_rgba(230,0,38,0.15)] transition-all duration-300 shadow-[inset_0_1px_4px_rgba(255,255,255,0.01)]">
-                          {/* Card Back Ornate Frame */}
-                          <div className="absolute inset-1.5 border border-zinc-800/40 rounded-lg pointer-events-none" />
-                          
-                          {/* Cosmic starry pattern */}
-                          <div className="absolute inset-0 bg-[radial-gradient(#E60026_1px,transparent_1px)] bg-[size:7px_7px] opacity-[0.18] rounded-lg group-hover:opacity-[0.3] transition-opacity" />
-                          
-                          {/* Orbiting celestial rings */}
-                          <div className="absolute w-12 h-12 rounded-full border border-dashed border-zinc-800/50 animate-[spin_15s_linear_infinite]" />
-                          <div className="absolute w-16 h-16 rounded-full border border-dotted border-zinc-900/80 animate-[spin_30s_linear_infinite] pointer-events-none" />
-                          
-                          {/* Central Occult Eye Symbol */}
-                          <div className="w-9 h-9 rounded-full border border-zinc-850 flex items-center justify-center text-zinc-400 group-hover:text-[#ff334b] group-hover:border-[#E60026]/40 transition-all shadow-[inset_0_1px_3px_rgba(255,255,255,0.01)] text-base relative z-10 bg-zinc-950">
-                            👁️
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                      );
+                    })}
+                  </div>
+                )}
+
+                <button
+                  onClick={handlePhysicalSynthesis}
+                  disabled={isDrawing || !tarotQuestion.trim() || !physicalPastCard || !physicalPresentCard || !physicalFutureCard}
+                  className={`w-full py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer font-google-sans ${
+                    tarotQuestion.trim() && !isDrawing && physicalPastCard && physicalPresentCard && physicalFutureCard
+                      ? 'bg-amber-500 text-black hover:bg-amber-600 shadow-[0_2px_15px_rgba(245,158,11,0.2)]'
+                      : 'bg-zinc-950 text-zinc-800 cursor-not-allowed border border-zinc-900/50'
+                  }`}
+                >
+                  {isDrawing ? "SYNTHESIZING REALMS..." : "Synthesize Physical Reading (Mode 2)"}
+                </button>
               </div>
             )}
-
-            <button
-              onClick={handleDrawTarot}
-              disabled={isDrawing || !tarotQuestion.trim()}
-              className={`w-full py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer font-google-sans ${
-                tarotQuestion.trim() && !isDrawing
-                  ? 'bg-[#E60026] text-black hover:bg-[#ff334b]'
-                  : 'bg-zinc-950 text-zinc-800 cursor-not-allowed border border-zinc-900/50'
-              }`}
-            >
-              {isDrawing ? "DRAWING CARDS..." : "DRAW 3 CARDS"}
-            </button>
           </div>
         </div>
       )}

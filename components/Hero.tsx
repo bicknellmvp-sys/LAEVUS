@@ -25,6 +25,7 @@ export const Hero: React.FC<HeroProps> = ({
     switch (activeView) {
       case 'chat': return 'LAEVUS';
       case 'tarot': return 'Tarot Draw';
+      case 'encyclopedia': return 'Tarot Encyclopedia';
       case 'afterlife': return 'Speak to the Dead';
       case 'transcripts': return 'Transcripts';
       case 'inner-work': return 'The Inner Work';
@@ -88,6 +89,17 @@ export const Hero: React.FC<HeroProps> = ({
                     >
                       <Sparkles className="w-3.5 h-3.5 text-zinc-400" />
                       <span className="font-bold text-[10px] tracking-wider font-google-sans">Tarot Card Draw</span>
+                    </button>
+
+                    {/* Tarot Encyclopedia */}
+                    <button
+                      onClick={() => handleSelect('encyclopedia')}
+                      className={`w-full text-left px-2.5 py-2 hover:bg-zinc-950 rounded text-xs flex items-center gap-2.5 transition-colors uppercase font-google-sans ${
+                        activeView === 'encyclopedia' ? 'bg-zinc-950 text-[#E60026]' : 'text-zinc-400 hover:text-zinc-200'
+                      }`}
+                    >
+                      <Compass className="w-3.5 h-3.5 text-zinc-400" />
+                      <span className="font-bold text-[10px] tracking-wider font-google-sans">Tarot Encyclopedia</span>
                     </button>
 
                     {/* 3. Speak to the Dead */}

@@ -1,0 +1,46 @@
+/* Paste this into your index.css file */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Inter:wght@300;400;500&display=swap');
+
+:root {
+  --bg-color: #111112;
+  --text-main: #E5E5E7;
+  --text-muted: #8E8E93;
+  --accent: #D4AF37; /* Muted Gold */
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.05em;
+  font-weight: 400;
+}
+
+/* Loose line height for luxury editorial reading feel */
+p, blockquote {
+  line-height: 1.7;
+  color: #D1D1D6;
+}
+
+/* Minimalist borderless inputs */
+input[type="text"], select {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #2C2C2E;
+  color: var(--text-main);
+  padding: 8px 0;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus, select:focus {
+  border-bottom: 1px solid var(--accent);
+}
